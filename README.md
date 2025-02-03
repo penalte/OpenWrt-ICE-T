@@ -1,2 +1,2 @@
 # OpenWrt-ICE-T
-OpenWrt ICE-T: ISP Configuration &amp; Enhancement Tools
+OpenWrt ICE-T: ISP Configurations, Enhancement &amp; Tools
