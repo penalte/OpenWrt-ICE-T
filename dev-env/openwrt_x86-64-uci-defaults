@@ -1,0 +1,91 @@
+# Beware! This script will be in /rom/etc/uci-defaults/ as part of the image.
+# uci-defaults scrip for dev openwrt_x86-64 image to set default values FOR PENALTE DEV ENV with share vscode mount. 
+# Uncomment lines to apply:
+# 
+#
+# root_password=""
+lan_ip_address="192.168.50.2"
+lan_ip_gateway="192.168.50.1"
+lan_dhcp_off="1"
+wan_off="1"
+
+# log potential errors.
+exec >/tmp/setup.log 2>&1
+
+# Set hostname and timezone for the dev environment. 
+uci set system.@system[0].hostname='PENALTE_DEV_ENV'
+uci set system.@system[0].description='PENALTE DEV ENVIRONMENT'
+uci set system.@system[0].notes='PENALTE OPENWRT DEV ENVIRONMENT'
+uci set system.@system[0].zonename='Europe/Lisbon'
+uci set system.@system[0].timezone='WET0WEST,M3.5.0/1,M10.5.0'
+uci commit system
+
+# Set root password.
+if [ -n "$root_password" ]; then
+  (echo "$root_password"; sleep 1; echo "$root_password") | passwd > /dev/null
+fi
+
+# Configure LAN.
+if [ -n "$lan_ip_address" ]; then
+  uci set network.lan.ipaddr="$lan_ip_address"
+  uci commit network
+fi
+
+# Configure LAN gateway and DNS.
+if [ -n "$lan_ip_gateway" ]; then
+  uci set network.lan.gateway="$lan_ip_gateway"
+  uci add_list network.lan.dns="$lan_ip_gateway"
+  uci commit network
+fi
+
+# Disable DHCP.
+if [ -n "$lan_dhcp_off" ]; then
+  uci set dhcp.lan.ignore=1
+  # Remove IPv6.
+  uci set dhcp.lan.ra_flags=disabled
+  uci set dhcp.lan.dhcpv6=disabled
+  uci set dhcp.lan.ra=disabled
+  uci commit dhcp
+fi
+
+# Disable WAN.
+if [ -n "$wan_off" ]; then
+  uci set network.wan.disabled='1'
+  uci set network.wan6.disabled='1'
+  uci commit network
+fi
+
+# these services are not needed for the dev environment.
+for i in firewall dnsmasq odhcpd; do
+  if /etc/init.d/"$i" enabled; then
+    /etc/init.d/"$i" disable
+    /etc/init.d/"$i" stop
+  fi
+done
+
+# Restart network.
+/etc/init.d/network restart
+
+# Create /ice directory OLD PATH NOW!! NEW!! -» /root for the vscode mount share to be easier to access on SSH login.
+#mkdir -p /ice
+
+# Add entry to /etc/fstab.
+#echo "ice /ice 9p trans=virtio,version=9p2000.L,rw,_netdev 0 0" >> /etc/fstab
+echo "ice /root 9p trans=virtio,version=9p2000.L,rw,_netdev 0 0" >> /etc/fstab
+
+# Mount the new filesystem.
+mount -a
+
+# chmod the script to make it executable.
+#chmod +x /ice/src/openwrt-ice-t.sh
+chmod +x /root/openwrt-ice-t.sh
+
+# OPENWRT does not boot fstab mounts, so we need to add the mount command to /etc/rc.local.
+# Modify /etc/rc.local to include the mount command before the existing exit 0.
+#sed -i '/^exit 0$/i mount -t 9p -o trans=virtio,version=9p2000.L ice /ice' /etc/rc.local
+sed -i '/^exit 0$/i mount -t 9p -o trans=virtio,version=9p2000.L ice /root' /etc/rc.local
+
+# With this uci-defaults script, we will have a ready to go image that share the VSCode workspace with the host machine.
+# The user can now start the ICE-T with ./openwrt-ice-t.sh right after booting the image.
+
+echo "All done!"
