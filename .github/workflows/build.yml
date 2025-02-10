@@ -40,7 +40,7 @@ jobs:
         makeself build/ openwrt-ice-t.run "OpenWrt ICE-T Installer" ./openwrt-ice-t.sh
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: openwrt-ice-t
         path: openwrt-ice-t.run
