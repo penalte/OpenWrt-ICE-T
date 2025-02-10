@@ -2,7 +2,7 @@
 
 ![ICE-T Logo](https://example.com/logo.png)
 
-[![GitHub release](https://img.shields.io/github/v/release/yourusername/openwrt-ice-t)](https://github.com/yourusername/openwrt-ice-t/releases) [![GitHub contributors](https://img.shields.io/github/contributors/yourusername/openwrt-ice-t)](https://github.com/yourusername/openwrt-ice-t/graphs/contributors) [![License](https://img.shields.io/github/license/yourusername/openwrt-ice-t)](LICENSE) [![Issues](https://img.shields.io/github/issues/yourusername/openwrt-ice-t)](https://github.com/yourusername/openwrt-ice-t/issues)
+[![GitHub release](https://img.shields.io/github/v/release/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/releases) [![GitHub contributors](https://img.shields.io/github/contributors/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/graphs/contributors) [![License](https://img.shields.io/github/license/penalte/openwrt-ice-t)](LICENSE) [![Issues](https://img.shields.io/github/issues/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/issues)
 
 ## 🔹 Overview
 ICE-T (**ISP Configurations, Enhancements & Tools**) is a powerful and modular **network automation framework** designed specifically for OpenWrt. Unlike generic OpenWrt tools, ICE-T provides a **specialized approach** for automating ISP configurations, optimizing network performance, and offering advanced troubleshooting utilities.
@@ -124,8 +124,6 @@ We welcome community contributions! To ensure consistency, follow these guidelin
 This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
 
 ## 📞 Support & Community
-- **GitHub Issues:** [Report a bug](https://github.com/yourusername/openwrt-ice-t/issues)
-- **Discussions:** Join our [GitHub Discussions](https://github.com/yourusername/openwrt-ice-t/discussions)
+- **GitHub Issues:** [Report a bug](https://github.com/penalte/openwrt-ice-t/issues)
+- **Discussions:** Join our [GitHub Discussions](https://github.com/penalte/openwrt-ice-t/discussions)
 - **Contributors:** A big thanks to all contributors who help improve ICE-T! 🎉
-
-                          # License file
