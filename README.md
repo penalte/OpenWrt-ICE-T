@@ -76,11 +76,11 @@ openwrt-ice-t/
 ISP scripts are the core of ICE-T, enabling **automatic configuration of network settings** for different ISPs. Each ISP has a dedicated script stored in `lib/isps/`.
 
 - **Naming Convention**: Files must be named `isp_COUNTRY_ISPNAME.sh`.
-- **Function Naming**: The function inside must match the filename but prefixed with `configure_`. Example:
+- **Function Naming**: The function inside must match the filename but prefixed with `run_`. Example:
     - File: `isp_portugal_vodafone.sh`
-    - Function: `configure_isp_portugal_vodafone()`
+    - Function: `run_isp_portugal_vodafone()`
 - **BANNER FIRST**: Every ISP function must begin with `banner` for UI consistency.
-- **ISP_COUNTRY and ISP_NAME**: Each script must define `ISP_COUNTRY` and `ISP_NAME` variables for clarity.
+- **ISP_COUNTRY and ISP_NAME**: Each script must define `ISP_COUNTRY` and `ISP_NAME` for menu display.
 
 #### Example ISP Script: Vodafone Portugal
 ```sh
@@ -117,7 +117,7 @@ Tools scripts provide various network diagnostics and debugging utilities. Each 
 - **Function Naming**: The function inside must match the filename but prefixed with `run_`. Example:
     - File: `tool_ping.sh`
     - Function: `run_tool_ping()`
-- **TOOL_NAME**: Each script must define `TOOL_NAME` for clarity.
+- **TOOL_NAME**: Each script must define `TOOL_NAME` for menu display.
 - **BANNER FIRST**: Every tool function must begin with `banner` for UI consistency.
 
 #### Example Tool Script: Ping
@@ -140,10 +140,10 @@ run_tool_ping() {
 Enhancements scripts optimize OpenWrt settings for performance and security. Each enhancement has a dedicated script stored in `lib/enhancements/`.
 
 - **Naming Convention**: Files must be named `enhancement_ENHANCEMENTNAME.sh`.
-- **Function Naming**: The function inside must match the filename but prefixed with `apply_`. Example:
+- **Function Naming**: The function inside must match the filename but prefixed with `run_`. Example:
     - File: `enhancement_qos.sh`
-    - Function: `apply_enhancement_qos()`
-- **ENHANCEMENT_NAME**: Each script must define `ENHANCEMENT_NAME` for clarity.
+    - Function: `run_enhancement_qos()`
+- **ENHANCEMENT_NAME**: Each script must define `ENHANCEMENT_NAME` for menu display.
 - **BANNER FIRST**: Every enhancement function must begin with `banner` for UI consistency.
 
 #### Example Enhancement Script: QoS
