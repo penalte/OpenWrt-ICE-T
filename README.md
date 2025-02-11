@@ -180,6 +180,11 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for d
 
 ## 📞 Support & Community
 - **GitHub Issues:** [Report a bug](https://github.com/penalte/openwrt-ice-t/issues)
+- **Discussions:** Join our [GitHub Discussions](https://github.com/penalte/openwrt-ice-t/discussions)
 - **Contributors:** A big thanks to all contributors who help improve ICE-T! 🎉
 
-[![GitHub contributors](https://contrib.rocks/image?repo=penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/graphs/contributors)
+## 👥 Contributors
+Thanks goes to these wonderful people:
+[![Contributors](https://contrib.rocks/image?repo=penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/graphs/contributors)
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
