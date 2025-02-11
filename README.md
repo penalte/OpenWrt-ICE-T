@@ -25,16 +25,10 @@ Ensure you have the following before installing ICE-T:
 - Basic familiarity with Linux commands (recommended)
 
 ### Installation Steps
-```sh
-# Clone the repository
-cd /root
-git clone https://github.com/penalte/openwrt-ice-t.git
-
-# Navigate to the project directory
-cd openwrt-ice-t
-
-# Make the script executable
-chmod +x openwrt-ice-t.sh
+1. **Download the self-extracting archive** from the [releases page](https://github.com/penalte/openwrt-ice-t/releases).
+2. **Transfer the file to your router** using `scp`:
+   ```sh
+   scp openwrt-ice-t.run root@<router-ip>:/root/
 ```
 
 ## 🎯 Usage
