@@ -56,19 +56,19 @@ Run the main script:
 ### Code Structure
 ```
 openwrt-ice-t/
-├── openwrt-ice-t.sh        # Main entry point
+├── openwrt-ice-t.sh         # Main entry point
 ├── lib/
-│   ├── banner.sh           # Displays the ASCII banner
-│   ├── logging.sh          # Handles system logging
-│   ├── menu_main.sh        # Main menu logic
-│   ├── menu_isps.sh        # ISP configuration menu
-│   ├── menu_tools.sh       # Tools menu
+│   ├── banner.sh            # Displays the ASCII banner with integrated messages
+│   ├── logging.sh           # Handles system logging
+│   ├── menu_main.sh         # Main menu logic
+│   ├── menu_isps.sh         # ISP configuration menu
+│   ├── menu_tools.sh        # Tools menu
 │   ├── menu_enhancements.sh # Enhancements menu
-│   ├── uci_helpers.sh      # UCI-based network settings
-│   ├── utils.sh            # General utility functions
-│   ├── isps/               # ISP configuration scripts
-│   ├── enhancements/       # Network enhancements
-│   ├── tools/              # Network tools scripts
+│   ├── uci_helpers.sh       # UCI-based network settings
+│   ├── utils.sh             # General utility functions
+│   ├── isps/                # ISP configuration scripts folder
+│   ├── enhancements/        # Network enhancements scripts folder
+│   ├── tools/               # Network tools scripts folder
 ```
 
 ### ISP Development Guide
@@ -77,9 +77,10 @@ ISP scripts are the core of ICE-T, enabling **automatic configuration of network
 
 - **Naming Convention**: Files must be named `isp_COUNTRY_ISPNAME.sh`.
 - **Function Naming**: The function inside must match the filename but prefixed with `configure_`. Example:
-  - File: `isp_portugal_vodafone.sh`
-  - Function: `configure_isp_portugal_vodafone()`
+    - File: `isp_portugal_vodafone.sh`
+    - Function: `configure_isp_portugal_vodafone()`
 - **BANNER FIRST**: Every ISP function must begin with `banner` for UI consistency.
+- **ISP_COUNTRY and ISP_NAME**: Each script must define `ISP_COUNTRY` and `ISP_NAME` variables for clarity.
 
 #### Example ISP Script: Vodafone Portugal
 ```sh
@@ -89,22 +90,22 @@ ISP_COUNTRY="Portugal"
 ISP_NAME="Vodafone"
 
 configure_isp_portugal_vodafone() {
-    banner  # Always display the banner first
-    while true; do
-        echo "Configuring $ISP_NAME ($ISP_COUNTRY):"
-        echo "1) Internet only"
-        echo "2) Internet + IPTV"
-        echo "3) Internet + IPTV + VOIP"
-        echo "0) Go back to ISP selection"
-        read -r vodafone_choice
-        case $vodafone_choice in
-            1) log_message "[INFO] Configuring Internet only..." ;;
-            2) log_message "[INFO] Configuring Internet + IPTV..." ;;
-            3) log_message "[INFO] Configuring Internet + IPTV + VOIP..." ;;
-            0) return ;; # Return to ISP selection
-            *) log_message "[ERROR] Invalid option selected: $vodafone_choice" ;;
-        esac
-    done
+        banner  # Always display the banner first
+        while true; do
+                echo "Configuring $ISP_NAME ($ISP_COUNTRY):"
+                echo "1) Internet only"
+                echo "2) Internet + IPTV"
+                echo "3) Internet + IPTV + VOIP"
+                echo "0) Go back to ISP selection"
+                read -r vodafone_choice
+                case $vodafone_choice in
+                        1) log_message "[INFO] Configuring Internet only..." ;;
+                        2) log_message "[INFO] Configuring Internet + IPTV..." ;;
+                        3) log_message "[INFO] Configuring Internet + IPTV + VOIP..." ;;
+                        0) return ;; # Return to ISP selection
+                        *) log_message "[ERROR] Invalid option selected: $vodafone_choice" ;;
+                esac
+        done
 }
 ```
 
