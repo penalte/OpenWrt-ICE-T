@@ -21,12 +21,18 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
+        sudo apt-get install -y shellcheck
         # Install makeself
         wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
         chmod +x makeself-2.5.0.run
         ./makeself-2.5.0.run
         sudo mv makeself-2.5.0/makeself.sh /usr/local/bin/makeself
         sudo mv makeself-2.5.0/makeself-header.sh /usr/local/bin/
+
+    - name: Run ShellCheck
+      run: |
+        shellcheck src/openwrt-ice-t.sh
+        find src/lib -type f -name "*.sh" -exec shellcheck {} \;
 
     - name: Prepare build directory
       run: |
