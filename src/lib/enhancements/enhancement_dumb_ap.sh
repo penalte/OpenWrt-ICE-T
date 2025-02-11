@@ -2,7 +2,7 @@
 
 ENHANCEMENT_NAME="Set Device as Dumb AP"
 
-configure_enhancement_dumb_ap() {
+run_enhancement_dumb_ap() {
     banner
     echo "[WARNING] Setting this device as a Dumb AP will disable DHCP, WAN, and WAN6 interfaces."
     echo "[WARNING] Other options like Network Tools and ISP Settings will no longer be available."

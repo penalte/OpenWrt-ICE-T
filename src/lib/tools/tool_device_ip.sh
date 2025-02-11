@@ -2,7 +2,7 @@
 
 TOOL_NAME="Configure Device IP"
 
-configure_tool_device_ip() {
+run_tool_device_ip() {
     while true; do
         banner
         echo "Select your LAN IP address:"

@@ -46,7 +46,7 @@ display_tools_menu() {
         . "$selected_tool"
 
         # Determine the function name dynamically
-        CONFIG_FUNCTION=$(basename "$selected_tool" .sh | sed 's/^tool_/configure_tool_/')
+        CONFIG_FUNCTION=$(basename "$selected_tool" .sh | sed 's/^tool_/run_tool_/')
 
         if command -v "$CONFIG_FUNCTION" >/dev/null 2>&1; then
             "$CONFIG_FUNCTION"  # Execute the tool configuration function

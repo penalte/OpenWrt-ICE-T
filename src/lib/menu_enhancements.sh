@@ -46,7 +46,7 @@ display_enhancements_menu() {
         . "$selected_enhancement"
 
         # Determine the function name dynamically
-        CONFIG_FUNCTION=$(basename "$selected_enhancement" .sh | sed 's/^enhancement_/configure_enhancement_/')
+        CONFIG_FUNCTION=$(basename "$selected_enhancement" .sh | sed 's/^enhancement_/run_enhancement_/')
 
         if command -v "$CONFIG_FUNCTION" >/dev/null 2>&1; then
             "$CONFIG_FUNCTION"  # Execute the enhancement configuration function
