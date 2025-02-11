@@ -27,17 +27,17 @@ Ensure you have the following before installing ICE-T:
 ### Installation Steps
 1. **Download the self-extracting archive** from the [releases page](https://github.com/penalte/openwrt-ice-t/releases).
 2. **Transfer the file to your router** using `scp`:
-    ```sh
-    scp -O openwrt-ice-t.run root@<router-ip>:/root/
-    ```
+```sh
+scp -O openwrt-ice-t.run root@<router-ip>:/root/
+```
 3. **SSH into your router**:
-    ```sh
-    ssh root@<router-ip>
-    ```
+```sh
+ssh root@<router-ip>
+```
 4. **Make the script executable**:
-    ```sh
-    chmod +x openwrt-ice-t.run
-    ```
+```sh
+chmod +x openwrt-ice-t.run
+```
 ## 🎯 Usage
 Run the main script:
 ```sh
@@ -106,6 +106,59 @@ configure_isp_portugal_vodafone() {
                         *) log_message "[ERROR] Invalid option selected: $vodafone_choice" ;;
                 esac
         done
+}
+```
+
+### Tools Development Guide
+#### **How Tools Scripts Work**
+Tools scripts provide various network diagnostics and debugging utilities. Each tool has a dedicated script stored in `lib/tools/`.
+
+- **Naming Convention**: Files must be named `tool_TOOLNAME.sh`.
+- **Function Naming**: The function inside must match the filename but prefixed with `run_`. Example:
+    - File: `tool_ping.sh`
+    - Function: `run_tool_ping()`
+- **TOOL_NAME**: Each script must define `TOOL_NAME` for clarity.
+- **BANNER FIRST**: Every tool function must begin with `banner` for UI consistency.
+
+#### Example Tool Script: Ping
+```sh
+#!/bin/sh
+
+TOOL_NAME="Ping"
+
+run_tool_ping() {
+        banner  # Always display the banner first
+        echo "Enter the IP address or domain to ping:"
+        read -r target
+        log_message "[INFO] Pinging $target..."
+        ping -c 4 "$target"
+}
+```
+
+### Enhancements Development Guide
+#### **How Enhancements Scripts Work**
+Enhancements scripts optimize OpenWrt settings for performance and security. Each enhancement has a dedicated script stored in `lib/enhancements/`.
+
+- **Naming Convention**: Files must be named `enhancement_ENHANCEMENTNAME.sh`.
+- **Function Naming**: The function inside must match the filename but prefixed with `apply_`. Example:
+    - File: `enhancement_qos.sh`
+    - Function: `apply_enhancement_qos()`
+- **ENHANCEMENT_NAME**: Each script must define `ENHANCEMENT_NAME` for clarity.
+- **BANNER FIRST**: Every enhancement function must begin with `banner` for UI consistency.
+
+#### Example Enhancement Script: QoS
+```sh
+#!/bin/sh
+
+ENHANCEMENT_NAME="QoS"
+
+apply_enhancement_qos() {
+        banner  # Always display the banner first
+        echo "Applying QoS settings..."
+        uci set qos.default=default
+        uci commit qos
+        /etc/init.d/qos restart
+        log_message "[INFO] QoS settings applied."
 }
 ```
 
