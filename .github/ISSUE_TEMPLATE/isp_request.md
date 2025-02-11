@@ -1,7 +1,7 @@
 ---
 name: ISP request
 about: Request an ISP Settings 
-title: 'ISP REQUEST'
+title: '[ISP REQUEST] '
 labels: 'ISP REQUEST'
 assignees: ''
 
