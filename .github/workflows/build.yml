@@ -1,48 +1,48 @@
 name: Build OpenWrt-ICE-T
 
 on:
-    push:
-        branches: [ "main" ]
-    pull_request:
-        branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-        - uses: actions/checkout@v3
+    steps:
+    - uses: actions/checkout@v3
 
-        - name: Install dependencies
-            run: |
-                sudo apt-get update
-                # Install makeself
-                wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
-                chmod +x makeself-2.5.0.run
-                ./makeself-2.5.0.run
-                sudo mv makeself-2.5.0/makeself.sh /usr/local/bin/makeself
-                sudo mv makeself-2.5.0/makeself-header.sh /usr/local/bin/
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        # Install makeself
+        wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
+        chmod +x makeself-2.5.0.run
+        ./makeself-2.5.0.run
+        sudo mv makeself-2.5.0/makeself.sh /usr/local/bin/makeself
+        sudo mv makeself-2.5.0/makeself-header.sh /usr/local/bin/
 
-        - name: Prepare build directory
-            run: |
-                mkdir -p build
-                cp -r src/* build/
-                chmod +x build/openwrt-ice-t.sh
+    - name: Prepare build directory
+      run: |
+        mkdir -p build
+        cp -r src/* build/
+        chmod +x build/openwrt-ice-t.sh
 
-        - name: Create self-extracting archive
-            run: |
-                makeself build/ openwrt-ice-t.run "OpenWrt ICE-T Installer" ./openwrt-ice-t.sh
+    - name: Create self-extracting archive
+      run: |
+        makeself build/ openwrt-ice-t.run "OpenWrt ICE-T Installer" ./openwrt-ice-t.sh
 
-        - name: Upload artifact
-            uses: actions/upload-artifact@v4
-            with:
-                name: openwrt-ice-t
-                path: openwrt-ice-t.run
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: openwrt-ice-t
+        path: openwrt-ice-t.run
 
-        - name: Create Release
-            if: startsWith(github.ref, 'refs/tags/')
-            uses: softprops/action-gh-release@v1
-            with:
-                files: openwrt-ice-t.run
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: openwrt-ice-t.run
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
