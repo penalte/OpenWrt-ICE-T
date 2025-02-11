@@ -18,7 +18,7 @@ run_isp_portugal_vodafone() {
                 additional_message="[WARNING] Support for $ISP_NAME ($ISP_COUNTRY) is coming soon."
                 ;;
             0)
-                additional_message="[DEBUG] test"
+                additional_message="[WARNING] $ISP_NAME ($ISP_COUNTRY): Configuration not applied."
                 display_main_menu  # Return to the main menu
                 return
                 ;;
