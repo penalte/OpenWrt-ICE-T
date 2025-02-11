@@ -132,12 +132,12 @@ run_isp_portugal_vodafone() {
         read -r vodafone_choice
         case $vodafone_choice in
             1|2|3)
-                log_message "[WARNING] Support for $ISP_NAME ($ISP_COUNTRY) is coming soon."
+                log "[WARNING] Support for $ISP_NAME ($ISP_COUNTRY) is coming soon."
                 additional_message="[WARNING] Support for $ISP_NAME ($ISP_COUNTRY) is coming soon."
                 ;;
             0) return ;; # Return to ISP selection
             *)
-                log_message "[ERROR] Invalid option selected: $vodafone_choice"
+                log "[ERROR] Invalid option selected: $vodafone_choice"
                 additional_message="[ERROR] Invalid option! Choose 1-4."
                 ;;
         esac
@@ -166,7 +166,8 @@ run_tool_ping() {
         banner  # Always display the banner first
         echo "Enter the IP address or domain to ping:"
         read -r target
-        log_message "[INFO] Pinging $target..."
+        log "[INFO] Pinging $target..."
+        message "[INFO] Pinging $target..."
         ping -c 4 "$target"
 }
 ```
@@ -194,7 +195,8 @@ run_enhancement_qos() {
         uci set qos.default=default
         uci commit qos
         /etc/init.d/qos restart
-        log_message "[INFO] QoS settings applied."
+        log "[INFO] QoS settings applied."
+        additional_message="[INFO] QoS settings applied."
 }
 ```
 
