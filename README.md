@@ -28,7 +28,7 @@ Ensure you have the following before installing ICE-T:
 1. **Download the self-extracting archive** from the [releases page](https://github.com/penalte/openwrt-ice-t/releases).
 2. **Transfer the file to your router** using `scp`:
    ```sh
-   scp openwrt-ice-t.run root@<router-ip>:/root/
+   scp -O openwrt-ice-t.run root@<router-ip>:/root/
 ```
 
 ## 🎯 Usage
