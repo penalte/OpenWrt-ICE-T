@@ -22,15 +22,24 @@ jobs:
         response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=100")
 
+        # Debug: Print the response
+        echo "Response: $response"
+
         # Check if the response contains workflow runs
         if echo "$response" | jq -e '.workflow_runs' > /dev/null; then
           runs=$(echo "$response" | jq -r '.workflow_runs[].id')
 
+          # Debug: Print the workflow run IDs
+          echo "Workflow run IDs: $runs"
+
           # Delete each workflow run
           for run_id in $runs; do
             echo "Deleting workflow run $run_id"
-            curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id"
+            delete_response=$(curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id")
+
+            # Debug: Print the delete response
+            echo "Delete response for run $run_id: $delete_response"
           done
         else
           echo "No workflow runs found or failed to fetch workflow runs."
