@@ -41,7 +41,7 @@ chmod +x openwrt-ice-t.run
 ## 🎯 Usage
 Run the main script:
 ```sh
-./openwrt-ice-t.sh
+./openwrt-ice-t.run
 ```
 ### Main Menu Options:
 1️⃣ **ISP Configuration** – Set up your ISP profile automatically.  
