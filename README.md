@@ -89,7 +89,7 @@ ISP scripts are the core of ICE-T, enabling **automatic configuration of network
 ISP_COUNTRY="Portugal"
 ISP_NAME="Vodafone"
 
-configure_isp_portugal_vodafone() {
+run_isp_portugal_vodafone() {
         banner  # Always display the banner first
         while true; do
                 echo "Configuring $ISP_NAME ($ISP_COUNTRY):"
@@ -117,8 +117,8 @@ Tools scripts provide various network diagnostics and debugging utilities. Each 
 - **Function Naming**: The function inside must match the filename but prefixed with `run_`. Example:
     - File: `tool_ping.sh`
     - Function: `run_tool_ping()`
-- **TOOL_NAME**: Each script must define `TOOL_NAME` for menu display.
 - **BANNER FIRST**: Every tool function must begin with `banner` for UI consistency.
+- **TOOL_NAME**: Each script must define `TOOL_NAME` for menu display.
 
 #### Example Tool Script: Ping
 ```sh
@@ -143,8 +143,8 @@ Enhancements scripts optimize OpenWrt settings for performance and security. Eac
 - **Function Naming**: The function inside must match the filename but prefixed with `run_`. Example:
     - File: `enhancement_qos.sh`
     - Function: `run_enhancement_qos()`
-- **ENHANCEMENT_NAME**: Each script must define `ENHANCEMENT_NAME` for menu display.
 - **BANNER FIRST**: Every enhancement function must begin with `banner` for UI consistency.
+- **ENHANCEMENT_NAME**: Each script must define `ENHANCEMENT_NAME` for menu display.
 
 #### Example Enhancement Script: QoS
 ```sh
@@ -152,7 +152,7 @@ Enhancements scripts optimize OpenWrt settings for performance and security. Eac
 
 ENHANCEMENT_NAME="QoS"
 
-apply_enhancement_qos() {
+run_enhancement_qos() {
         banner  # Always display the banner first
         echo "Applying QoS settings..."
         uci set qos.default=default
