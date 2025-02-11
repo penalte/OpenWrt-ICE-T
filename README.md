@@ -1,8 +1,23 @@
 # ICE-T: ISP Configurations, Enhancements & Tools
 
-![ICE-T Logo](https://github.com/penalte/OpenWrt-ICE-T/blob/main/docs/images/logo.png?raw=true)
+<p align="center">
+  <img src="https://github.com/penalte/OpenWrt-ICE-T/blob/main/docs/images/logo.png?raw=true" alt="ICE-T Logo">
+</p>
 
-[![GitHub release](https://img.shields.io/github/v/release/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/releases) [![GitHub contributors](https://img.shields.io/github/contributors/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/graphs/contributors) [![License](https://img.shields.io/github/license/penalte/openwrt-ice-t)](LICENSE) [![Issues](https://img.shields.io/github/issues/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/issues)
+<p align="center">
+  <a href="https://github.com/penalte/openwrt-ice-t/releases">
+    <img src="https://img.shields.io/github/v/release/penalte/openwrt-ice-t" alt="GitHub release">
+  </a>
+  <a href="https://github.com/penalte/openwrt-ice-t/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/penalte/openwrt-ice-t" alt="GitHub contributors">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/github/license/penalte/openwrt-ice-t" alt="License">
+  </a>
+  <a href="https://github.com/penalte/openwrt-ice-t/issues">
+    <img src="https://img.shields.io/github/issues/penalte/openwrt-ice-t" alt="Issues">
+  </a>
+</p>
 
 ## 🔹 Overview
 ICE-T (**ISP Configurations, Enhancements & Tools**) is a powerful and modular **network automation framework** designed specifically for OpenWrt. Unlike generic OpenWrt tools, ICE-T provides a **specialized approach** for automating ISP configurations, optimizing network performance, and offering advanced troubleshooting utilities.
@@ -27,17 +42,17 @@ Ensure you have the following before installing ICE-T:
 ### Installation Steps
 1. **Download the self-extracting archive** from the [releases page](https://github.com/penalte/openwrt-ice-t/releases).
 2. **Transfer the file to your router** using `scp`:
-```sh
-scp -O openwrt-ice-t.run root@<router-ip>:/root/
-```
+   ```sh
+   scp -O openwrt-ice-t.run root@<router-ip>:/root/
+   ```
 3. **SSH into your router**:
-```sh
-ssh root@<router-ip>
-```
+   ```sh
+   ssh root@<router-ip>
+   ```
 4. **Make the script executable**:
-```sh
-chmod +x openwrt-ice-t.run
-```
+   ```sh
+   chmod +x openwrt-ice-t.run
+   ```
 ## 🎯 Usage
 Run the main script:
 ```sh
@@ -209,3 +224,4 @@ Thanks goes to these wonderful people:
 [![Contributors](https://contrib.rocks/image?repo=penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/graphs/contributors)
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+````
