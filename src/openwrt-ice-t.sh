@@ -3,6 +3,12 @@ set +x
 
 # Initialize variables
 allow_snapshots=0
+additional_message=""
+
+
+# Export variables
+export allow_snapshots
+export additional_message
 
 # Parse command-line arguments
 while [ "$#" -gt 0 ]; do
