@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
+name: ISP request
+about: Request an ISP Settings 
+title: 'ISP REQUEST'
+labels: 'ISP REQUEST'
 assignees: ''
 
 ---
