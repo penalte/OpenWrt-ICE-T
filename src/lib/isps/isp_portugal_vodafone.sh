@@ -7,9 +7,9 @@ run_isp_portugal_vodafone() {
     while true; do
         banner
         echo "Configuring $ISP_NAME ($ISP_COUNTRY):"
-        echo "1) Internet only (Support coming soon)"
-        echo "2) Internet + IPTV (Support coming soon)"
-        echo "3) Internet + IPTV + VOIP (Support coming soon)"
+        echo "1) Internet (Support coming soon)"
+        echo "2) IPTV (Support coming soon)"
+        echo "3) VOIP (Support coming soon)"
         echo "0) Go back to Main Menu"
         read -r vodafone_choice
         case $vodafone_choice in
