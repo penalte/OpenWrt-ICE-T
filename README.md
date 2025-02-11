@@ -88,10 +88,10 @@ openwrt-ice-t/
 
 ### Development
 
-#### Additional Message Banner
-To maintain UI consistency, every script should include an `additional_message` variable. This variable is used to display additional banner messages or warnings to the user and will be shown at the next UI selection refresh.
+#### UI Message System
+To maintain UI consistency, every script should include an `additional_message` variable. This variable is used to display additional banner messages or warnings to the user and will be shown at the next UI refresh.
 
-You can use the following tags to categorize your messages:
+Use the following tags to categorize your messages:
 - `[INFO]` for informational messages
 - `[ERROR]` for error messages
 - `[WARNING]` for warning messages
@@ -100,8 +100,17 @@ You can use the following tags to categorize your messages:
 
 Example usage in a script:
 ```sh
+log "[INFO] This is a log message saved in the log file /var/log/openwrt-ice-t.log"
+message "[INFO] This is a continuous message displayed"
 additional_message="[INFO] This is an additional banner message."
 ```
+## How It Works
+
+- `log "[INFO] ..."`: Saves the message to the system log for tracking.
+- `message "[INFO] ..."`: Displays a real-time message to the user.
+- `additional_message="[INFO] ..."`: Stores a message that will be displayed in the next UI refresh.
+
+This structure ensures that users receive clear, categorized, and actionable messages while interacting with the system. 🚀
 
 ### ISP Development Guide
 #### **How ISP Scripts Work**
