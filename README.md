@@ -1,6 +1,6 @@
 # ICE-T: ISP Configurations, Enhancements & Tools
 
-![ICE-T Logo](https://raw.githubusercontent.com/penalte/OpenWrt-ICE-T/refs/heads/main/images/logo.png)
+![ICE-T Logo](https://github.com/penalte/OpenWrt-ICE-T/blob/main/docs/images/logo.png?raw=true)
 
 [![GitHub release](https://img.shields.io/github/v/release/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/releases) [![GitHub contributors](https://img.shields.io/github/contributors/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/graphs/contributors) [![License](https://img.shields.io/github/license/penalte/openwrt-ice-t)](LICENSE) [![Issues](https://img.shields.io/github/issues/penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/issues)
 
