@@ -1,0 +1,22 @@
+{
+  "template": "## Changelog\n\n{{CHANGELOG}}\n\n## Contributors\n\n{{CONTRIBUTORS}}",
+  "categories": [
+    {
+      "title": "🚀 Features",
+      "labels": ["feature"]
+    },
+    {
+      "title": "🐛 Fixes",
+      "labels": ["bug"]
+    },
+    {
+      "title": "🛠 Maintenance",
+      "labels": ["maintenance"]
+    }
+  ],
+  "sort": "ASC",
+  "exclude_labels": ["duplicate", "question", "invalid", "wontfix"],
+  "include_open": false,
+  "max_pull_requests": 100,
+  "max_back_track_time_days": 365
+}
