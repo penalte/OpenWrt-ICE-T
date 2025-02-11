@@ -1,7 +1,7 @@
 #!/bin/sh
 log() {
     local message="$1"
-    log_file="/var/log/router_setup.log"
+    log_file="/var/log/openwrt-ice-t.log"
     # Ensure the log file exists and is writable
     if [ ! -f "$log_file" ]; then
         touch "$log_file" 2>/dev/null || { echo "[WARNING] Unable to create log file. Logging disabled."; return; }
