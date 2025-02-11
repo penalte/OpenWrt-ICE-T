@@ -138,7 +138,7 @@ run_isp_portugal_vodafone() {
         echo "1) Internet only (Support coming soon)"
         echo "2) Internet + IPTV (Support coming soon)"
         echo "3) Internet + IPTV + VOIP (Support coming soon)"
-        echo "0) Go back to ISP selection"
+        echo "0) Go back to Main Menu"
         read -r vodafone_choice
         case $vodafone_choice in
             1|2|3)
