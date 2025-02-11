@@ -24,7 +24,7 @@ run_tool_device_ip() {
                     if validate_ip "$lan_ip"; then
                         break
                     else
-                        log_message "[ERROR] Invalid IP format entered: $lan_ip"
+                        log "[ERROR] Invalid IP format entered: $lan_ip"
                         additional_message="[ERROR] Invalid IP format! Try again."
                     fi
                 done
@@ -32,17 +32,17 @@ run_tool_device_ip() {
                 ;;
             0) return ;; # Return to Tools menu
             *)
-                log_message "[ERROR] Invalid option selected: $lan_choice"
+                log "[ERROR] Invalid option selected: $lan_choice"
                 additional_message="[ERROR] Invalid option! Choose 1-4 or 0 to go back."
                 ;;
         esac
     done
 
     if uci set network.lan.ipaddr="$lan_ip"; then
-        log_message "[OK] LAN IP configured to $lan_ip (not yet applied)"
+        log "[OK] LAN IP configured to $lan_ip (not yet applied)"
         additional_message="[OK] LAN IP configured to $lan_ip (not yet applied)"
     else
-        log_message "[ERROR] Failed to configure LAN IP: $lan_ip"
+        log "[ERROR] Failed to configure LAN IP: $lan_ip"
         additional_message="[ERROR] Failed to configure LAN IP. Please try again."
     fi
 }

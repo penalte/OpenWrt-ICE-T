@@ -9,7 +9,7 @@ run_enhancement_dumb_ap() {
     echo "[WARNING] Do you want to proceed? (y/n)"
     read -r confirm
     if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
-        log_message "[INFO] Operation canceled by user."
+        log "[INFO] Operation canceled by user."
         additional_message="[INFO] Operation canceled. Returning to the main menu."
         return
     fi
@@ -17,7 +17,7 @@ run_enhancement_dumb_ap() {
     echo "Enter the main router's gateway IP (e.g., 192.168.1.1):"
     read -r gateway_ip
     if ! validate_ip "$gateway_ip"; then
-        log_message "[ERROR] Invalid gateway IP format entered: $gateway_ip"
+        log "[ERROR] Invalid gateway IP format entered: $gateway_ip"
         additional_message="[ERROR] Invalid gateway IP format! Operation canceled."
         return
     fi
@@ -25,20 +25,20 @@ run_enhancement_dumb_ap() {
     base_ip=$(echo "$gateway_ip" | cut -d'.' -f1-3)
     dumb_ap_ip=$(select_dumb_ap_ip "$base_ip")
     if [ -z "$dumb_ap_ip" ]; then
-        log_message "[WARNING] Dumb AP IP selection canceled by user."
+        log "[WARNING] Dumb AP IP selection canceled by user."
         additional_message="[WARNING] Dumb AP IP selection canceled. Returning to the main menu."
         return
     fi
 
     if uci set network.lan.ipaddr="$dumb_ap_ip"; then
-        log_message "[OK] Dumb AP IP set to $dumb_ap_ip (not yet applied)"
+        log "[OK] Dumb AP IP set to $dumb_ap_ip (not yet applied)"
         additional_message="[OK] Dumb AP IP set to $dumb_ap_ip (not yet applied)"
     else
-        log_message "[ERROR] Failed to set Dumb AP IP: $dumb_ap_ip"
+        log "[ERROR] Failed to set Dumb AP IP: $dumb_ap_ip"
         additional_message="[ERROR] Failed to set Dumb AP IP. Please try again."
         return
     fi
 
-    log_message "[OK] This device has been configured as a Dumb AP (not yet applied)."
+    log "[OK] This device has been configured as a Dumb AP (not yet applied)."
     additional_message="[OK] This device has been configured as a Dumb AP (not yet applied). Restart to apply changes."
 }

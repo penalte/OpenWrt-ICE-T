@@ -31,7 +31,7 @@ detect_openwrt() {
         # Fallback for version comparison if dpkg is unavailable
         if command -v dpkg >/dev/null 2>&1; then
             if dpkg --compare-versions "$openwrt_version" ge "22.0"; then
-                log_message "[INFO] OpenWrt $openwrt_version detected. Continuing..."
+                log "[INFO] OpenWrt $openwrt_version detected. Continuing..."
                 return 0
             else
                 message "[ERROR] This script requires OpenWrt version 22.0 or higher. Detected version: $openwrt_version."
@@ -93,10 +93,10 @@ validate_ip() {
 enable_igmp_snooping() {
     log_message "[INFO] Enabling IGMP snooping on the bridge interface..."
     if uci set network.lan.igmp_snooping='1'; then
-        log_message "[OK] IGMP snooping enabled on the bridge interface (not yet applied)"
+        log "[OK] IGMP snooping enabled on the bridge interface (not yet applied)"
         additional_message="[OK] IGMP snooping enabled on the bridge interface (not yet applied)"
     else
-        log_message "[ERROR] Failed to enable IGMP snooping."
+        log "[ERROR] Failed to enable IGMP snooping."
         additional_message="[ERROR] Failed to enable IGMP snooping."
     fi
 }

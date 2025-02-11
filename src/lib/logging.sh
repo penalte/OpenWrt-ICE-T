@@ -1,5 +1,5 @@
 #!/bin/sh
-log_message() {
+log() {
     local message="$1"
     log_file="/var/log/router_setup.log"
     # Ensure the log file exists and is writable

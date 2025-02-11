@@ -25,7 +25,7 @@ ICE-T (**ISP Configurations, Enhancements & Tools**) is a powerful and modular *
 Initially developed to **simplify ISP configurations for Portugal-based ISPs**, ICE-T has evolved into a **versatile, modular solution** that supports multiple ISPs worldwide. With **a structured, menu-driven CLI**, it caters to both novice users and advanced administrators, ensuring seamless configuration, security, and performance enhancements.
 
 ## 🚀 Features
-✔ **Automated ISP Configuration** – Pre-configured profiles for major ISPs (Vodafone, MEO, NOS, Digi, and more).  
+✔ **Automated ISP Configuration** – Pre-configured profiles for ISPs (Vodafone, MEO, NOS, Digi, and more).  
 ✔ **Performance & Security Enhancements** – Optimized routing, QoS, DNS filtering, and firewall tweaks.  
 ✔ **Advanced Network Tools** – Troubleshooting utilities for connectivity and diagnostics.  
 ✔ **Interactive CLI** – Menu-based interface for streamlined configuration.  

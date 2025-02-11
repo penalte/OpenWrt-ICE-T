@@ -15,20 +15,13 @@ display_main_menu() {
         case $choice in
             1)
                 #if is_dumb_ap; then 
-                #    log_message "[WARNING] This device is configured as a Dumb AP. Network Tools are not available."
+                #    log "[WARNING] This device is configured as a Dumb AP. Network Tools are not available."
                 #    additional_message="[WARNING] This device is configured as a Dumb AP. Network Tools are not available."
                 #else
                     display_isps_menu
                 #fi
                 ;;
-            2)
-                #if is_dumb_ap; then
-                #    log_message "[WARNING] This device is configured as a Dumb AP. ISP Settings are not available."
-                #    additional_message="[WARNING] This device is configured as a Dumb AP. ISP Settings are not available."
-                #else
-                    display_tools_menu
-                #fi
-                ;;
+            2) display_tools_menu ;;
             3) display_enhancements_menu ;;
             4) preview_changes
 		echo "Press Enter to return to the main menu."
@@ -41,7 +34,7 @@ display_main_menu() {
                 read -r confirm
                 if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
                     if uci commit; then
-                        log_message "[OK] Changes committed successfully!"
+                        log "[OK] Changes committed successfully!"
                         additional_message="[OK] Changes committed successfully!"
                         echo "[WARNING] The device will now restart in 10 seconds to apply changes."
                         for i in $(seq 10 -1 1); do
@@ -51,23 +44,23 @@ display_main_menu() {
                         echo "[OK] Restarting now..."
                         reboot
                     else
-                        log_message "[ERROR] Failed to commit changes."
+                        log "[ERROR] Failed to commit changes."
                         additional_message="[ERROR] Failed to commit changes. Please try again."
                     fi
                 else
-                    log_message "[INFO] Changes were not applied. Returning to the main menu."
+                    log "[INFO] Changes were not applied. Returning to the main menu."
                     additional_message="[INFO] Changes were not applied. Returning to the main menu."
                 fi
                 ;;
             0)
                 revert_changes
-                log_message "[INFO] Exiting without applying changes."
+                log "[INFO] Exiting without applying changes."
                 additional_message="[INFO] Exiting without applying changes."
                 clear  # Clear the terminal before exiting
                 exit 0
                 ;;
             *)
-                log_message "[ERROR] Invalid option selected: $choice"
+                log "[ERROR] Invalid option selected: $choice"
                 additional_message="[ERROR] Invalid option! Choose 1-6 or 0 to exit."
                 ;;
         esac
