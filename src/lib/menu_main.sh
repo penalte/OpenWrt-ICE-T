@@ -3,7 +3,7 @@
 display_main_menu() {
     while true; do
         banner
-        echo "Configuration Menu: lolita"
+        echo "Configuration Menu:"
         echo "1) ISP Configuration"
         echo "2) Tools"
         echo "3) Enhancements"
