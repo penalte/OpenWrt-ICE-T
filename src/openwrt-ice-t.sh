@@ -3,7 +3,6 @@ set +x
 
 # Initialize variables
 allow_snapshots=0
-debug_mode=0
 
 # Parse command-line arguments
 while [ "$#" -gt 0 ]; do
@@ -12,7 +11,6 @@ while [ "$#" -gt 0 ]; do
             allow_snapshots=1
             ;;
         --debug)
-            debug_mode=1
             set -x  # Enable debug output
             ;;
         --help|-h)
@@ -42,6 +40,7 @@ done
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 LIB_DIR="$SCRIPT_DIR/lib"
 
+# shellcheck disable=SC1090
 for lib in menu_main.sh utils.sh logging.sh banner.sh uci_helpers.sh menu_isps.sh menu_tools.sh menu_enhancements.sh; do
     if [ ! -f "$LIB_DIR/$lib" ]; then
         echo "Error: Required library $lib not found in $LIB_DIR"
