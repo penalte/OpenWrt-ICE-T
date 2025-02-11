@@ -221,6 +221,6 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for d
 
 ## 👥 Contributors
 Thanks goes to these wonderful people:
-[![Contributors](https://contrib.rocks/image?repo=penalte/openwrt-ice-t)](https://github.com/penalte/openwrt-ice-t/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=penalte/OpenWrt-ICE-T)](https://github.com/penalte/OpenWrt-ICE-T/graphs/contributors)
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
