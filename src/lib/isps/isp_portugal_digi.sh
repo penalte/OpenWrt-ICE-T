@@ -4,7 +4,10 @@ ISP_COUNTRY="Portugal"
 ISP_NAME="Digi"
 
 run_isp_portugal_digi() {
-    echo "Testing Digi in Portugal..."
+    banner
+    message "Configuring $ISP_NAME ($ISP_COUNTRY):"
     sleep 4
-    echo "Configuration completed."
+    additional_message="[INFO] $ISP_NAME ($ISP_COUNTRY): Configuration completed."
+    display_main_menu  # Return to the main menu
+    return
 }

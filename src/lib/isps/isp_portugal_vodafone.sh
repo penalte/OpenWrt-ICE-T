@@ -17,7 +17,11 @@ run_isp_portugal_vodafone() {
                 log "[WARNING] Support for $ISP_NAME ($ISP_COUNTRY) is coming soon."
                 additional_message="[WARNING] Support for $ISP_NAME ($ISP_COUNTRY) is coming soon."
                 ;;
-            0) return ;; # Return to ISP selection
+            0)
+                additional_message="[DEBUG] test"
+                display_main_menu  # Return to the main menu
+                return
+                ;;
             *)
                 log "[ERROR] Invalid option selected: $vodafone_choice"
                 additional_message="[ERROR] Invalid option! Choose 1-4."
