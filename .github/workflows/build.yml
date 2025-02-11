@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write  # Ensure the token has write permissions for contents
+
 jobs:
   build:
     runs-on: ubuntu-latest
