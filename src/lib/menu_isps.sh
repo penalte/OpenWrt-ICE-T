@@ -5,7 +5,7 @@ ISP_DIR="$SCRIPT_DIR/lib/isps"
 # Function to extract the function name from the filename
 extract_function_name_from_filename() {
     local file="$1"
-    basename "$file" .sh | sed 's/^isp_/configure_isp_/'
+    basename "$file" .sh | sed 's/^isp_/run_isp_/'
 }
 
 # Function to extract ISP display names from inside the script

@@ -1,6 +1,6 @@
 ---
 name: Tool Request
-about: Request a new tool or software for implementation
+about: Request a new tool for implementation
 title: '[TOOL REQUEST] Tool Name: **[Enter Tool Name]** | Purpose: **[Enter Purpose]**'
 labels: 'TOOL REQUEST'
 assignees: []

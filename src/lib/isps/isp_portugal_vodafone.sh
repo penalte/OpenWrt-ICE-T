@@ -3,7 +3,7 @@
 ISP_COUNTRY="Portugal"
 ISP_NAME="Vodafone"
 
-configure_isp_portugal_vodafone() {
+run_isp_portugal_vodafone() {
     while true; do
         banner
         echo "Configuring $ISP_NAME ($ISP_COUNTRY):"

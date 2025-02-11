@@ -3,7 +3,7 @@
 ISP_COUNTRY="Spain"
 ISP_NAME="Digi"
 
-configure_isp_spain_digi() {
+run_isp_spain_digi() {
 	banner
     echo "Testing Digi in Spain..."
     sleep 4
