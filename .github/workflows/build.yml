@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write  # Ensure the token has write permissions for contents
+  pull-requests: write  # Ensure the token has write permissions for pull requests
 
 jobs:
   build:
