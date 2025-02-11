@@ -74,7 +74,7 @@ openwrt-ice-t/
 ### Development
 
 #### Additional Message Banner
-To maintain UI consistency, every script should include an `additional_message` variable. This variable is used to display additional messages or warnings to the user and will be shown at the next banner refresh.
+To maintain UI consistency, every script should include an `additional_message` variable. This variable is used to display additional banner messages or warnings to the user and will be shown at the next UI selection refresh.
 
 You can use the following tags to categorize your messages:
 - `[INFO]` for informational messages
@@ -85,7 +85,7 @@ You can use the following tags to categorize your messages:
 
 Example usage in a script:
 ```sh
-additional_message="[INFO] This is an additional message."
+additional_message="[INFO] This is an additional banner message."
 ```
 
 ### ISP Development Guide
@@ -106,7 +106,7 @@ ISP scripts are the core of ICE-T, enabling **automatic configuration of network
 ISP_COUNTRY="Portugal"
 ISP_NAME="Vodafone"
 
-configure_isp_portugal_vodafone() {
+run_isp_portugal_vodafone() {
     while true; do
         banner
         echo "Configuring $ISP_NAME ($ISP_COUNTRY):"
