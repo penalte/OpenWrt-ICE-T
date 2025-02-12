@@ -174,15 +174,20 @@ Tools scripts provide various network diagnostics and debugging utilities. Each 
 ```sh
 #!/bin/sh
 
-TOOL_NAME="Ping"
+TOOL_NAME="Example Tool - Ping"
 
 run_tool_ping() {
-        banner  # Always display the banner first
-        echo "Enter the IP address or domain to ping:"
-        read -r target
-        log "[INFO] Pinging $target..."
-        message "[INFO] Pinging $target..."
-        ping -c 4 "$target"
+    banner  # Always display the banner first
+    message "[INFO] Enter the IP address or domain to ping:"
+    read -r target
+    banner  # Clear the screen after reading input
+    log "[INFO] Pinging $target ..."
+    message "[INFO] Pinging $target ..."
+    ping -c 4 "$target"
+    message "[INFO] Press Enter to go back to the main menu."
+    read -r  # Wait for user to press Enter
+    display_main_menu  # Return to the main menu
+    return
 }
 ```
 
@@ -197,20 +202,33 @@ Enhancements scripts optimize OpenWrt settings for performance and security. Eac
 - **BANNER FIRST**: Every enhancement function must begin with `banner` for UI consistency.
 - **ENHANCEMENT_NAME**: Each script must define `ENHANCEMENT_NAME` for menu display.
 
-#### Example Enhancement Script: QoS
+#### Example Enhancement Script: Cloudflare DNS
 ```sh
 #!/bin/sh
 
-ENHANCEMENT_NAME="QoS"
+ENHANCEMENT_NAME="Example Enhancement - Cloudflare DNS"
 
-run_enhancement_qos() {
-        banner  # Always display the banner first
-        echo "Applying QoS settings..."
-        uci set qos.default=default
-        uci commit qos
-        /etc/init.d/qos restart
-        log "[INFO] QoS settings applied."
-        additional_message="[INFO] QoS settings applied."
+run_enhancement_cloudflare_dns() {
+    banner  # Always display the banner first
+    message "Applying Cloudflare DNS settings for WAN and WAN6..."
+
+    # Set Cloudflare DNS for WAN
+    uci set network.wan.peerdns='0' # Ignore ISP DNS
+    uci add_list network.wan.dns='1.1.1.1'
+    uci add_list network.wan.dns='1.0.0.0'
+
+    # Set Cloudflare DNS for WAN6
+    uci set network.wan6.reqaddress='try'
+    uci set network.wan6.reqprefix='auto'
+    uci set network.wan6.norelease='1'
+    uci set network.wan6.peerdns='0' # Ignore ISP DNS
+    uci add_list network.wan6.dns='2606:4700:4700::1111'
+    uci add_list network.wan6.dns='2606:4700:4700::1001'
+
+    message "[INFO] Cloudflare DNS settings applied for WAN and WAN6."
+    additional_message="[INFO] Cloudflare DNS settings applied for WAN and WAN6."
+    display_main_menu  # Return to the main menu
+    return
 }
 ```
 
