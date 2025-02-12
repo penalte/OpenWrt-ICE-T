@@ -45,16 +45,20 @@ jobs:
       id: extract_version
       run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
+    - name: Set development version
+      if: "!startsWith(github.ref, 'refs/tags/')"
+      run: echo "VERSION=development" >> $GITHUB_ENV
+
     - name: Create self-extracting archive
       run: |
-        VERSION=${{ env.VERSION }}
-        makeself --version "$VERSION" build/ "openwrt-ice-t-${VERSION}.run" "OpenWrt ICE-T Installer v${VERSION}" ./openwrt-ice-t.sh
+        echo "VERSION=${{ env.VERSION }}"
+        makeself build/ "openwrt-ice-t-${{ env.VERSION }}.run" "OpenWrt ICE-T Installer v${{ env.VERSION }}" ./openwrt-ice-t.sh
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: openwrt-ice-t
-        path: "openwrt-ice-t-${VERSION}.run"
+        path: "openwrt-ice-t-${{ env.VERSION }}.run"
 
     - name: Generate changelog
       if: startsWith(github.ref, 'refs/tags/')
@@ -67,7 +71,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: "openwrt-ice-t-${VERSION}.run"
+        files: "openwrt-ice-t-${{ env.VERSION }}.run"
         body: ${{ steps.changelog.outputs.changelog }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
