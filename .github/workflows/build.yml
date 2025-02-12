@@ -8,15 +8,18 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: write  # Ensure the token has write permissions for contents
-  pull-requests: write  # Ensure the token has write permissions for pull requests
+  contents: write
+  pull-requests: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Ensures full commit history for changelog
 
     - name: Install dependencies
       run: |
@@ -47,7 +50,13 @@ jobs:
 
     - name: Set development version
       if: "!startsWith(github.ref, 'refs/tags/')"
-      run: echo "VERSION=development" >> $GITHUB_ENV
+      run: echo "VERSION=dev-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+    - name: Debug Print environment variables
+      run: env
+
+    - name: Debug List build directory contents
+      run: ls -la build
 
     - name: Create self-extracting archive
       run: |
@@ -67,11 +76,15 @@ jobs:
       with:
         configuration: .github/release-changelog-config.json
 
+    - name: Debug Changelog Output
+      if: startsWith(github.ref, 'refs/tags/')
+      run: echo "${{ steps.changelog.outputs.changelog }}"
+
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
         files: "openwrt-ice-t-${{ env.VERSION }}.run"
-        body: ${{ steps.changelog.outputs.changelog }}
+        body: ${{ steps.changelog.outputs.changelog || 'No changelog available.' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
