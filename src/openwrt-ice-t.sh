@@ -4,7 +4,7 @@ set +x
 # Initialize variables
 allow_snapshots=0
 additional_message=""
-
+VERSION=${VERSION:-"Development"}  # Default to "Development" if VERSION is not set
 
 # Export variables
 export allow_snapshots
@@ -30,7 +30,7 @@ while [ "$#" -gt 0 ]; do
             exit 0
             ;;
         --version|-v)
-            echo "OpenWrt-ICE-T version 1.0.0"
+            echo "OpenWrt-ICE-T - $VERSION"
             exit 0
             ;;
         *)
@@ -77,4 +77,4 @@ trap cleanup INT TERM
 # Entry Point
 detect_openwrt "$allow_snapshots"  # Pass the allow_snapshots flag to detect_openwrt
 revert_changes                     # Revert any uncommitted changes from previous runs
-display_main_menu                  # Start the main menu
+display_main_menu                  # Start the main menu               # Start the main menu
