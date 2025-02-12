@@ -197,8 +197,8 @@ Enhancements scripts optimize OpenWrt settings for performance and security. Eac
 
 - **Naming Convention**: Files must be named `enhancement_ENHANCEMENTNAME.sh`.
 - **Function Naming**: The function inside must match the filename but prefixed with `run_`. Example:
-    - File: `enhancement_qos.sh`
-    - Function: `run_enhancement_qos()`
+    - File: `enhancement_cloudflare_dns.sh`
+    - Function: `run_enhancement_cloudflare_dns()`
 - **BANNER FIRST**: Every enhancement function must begin with `banner` for UI consistency.
 - **ENHANCEMENT_NAME**: Each script must define `ENHANCEMENT_NAME` for menu display.
 
