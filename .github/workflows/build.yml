@@ -67,7 +67,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: openwrt-ice-t
-        path: "openwrt-ice-t-${{ env.VERSION }}.run"
+        path: "openwrt-ice-t.run"
 
     - name: Generate changelog
       if: startsWith(github.ref, 'refs/tags/')
@@ -84,7 +84,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: "openwrt-ice-t-${{ env.VERSION }}.run"
+        files: "openwrt-ice-t.run"
         body: ${{ steps.changelog.outputs.changelog || 'No changelog available.' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
