@@ -15,12 +15,13 @@
     },
     {
       "title": "📌 Other Commits",
-      "labels": []
+      "labels": [],
+      "include": ["*"]
     }
   ],
   "sort": "ASC",
   "exclude_labels": ["duplicate", "question", "invalid", "wontfix"],
   "include_open": false,
   "max_pull_requests": 100,
-  "max_back_track_time_days": 365
+  "max_back_track_time_days": 730
 }
