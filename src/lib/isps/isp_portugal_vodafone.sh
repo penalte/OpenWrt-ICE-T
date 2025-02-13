@@ -6,7 +6,7 @@ ISP_NAME="Vodafone"
 run_isp_portugal_vodafone() {
     while true; do
         banner
-        echo "Configuring $ISP_NAME ($ISP_COUNTRY): "
+        echo "Configuring $ISP_NAME ($ISP_COUNTRY):"
         echo "1) Internet (Support coming soon)"
         echo "2) IPTV (Support coming soon)"
         echo "3) VOIP (Support coming soon)"
