@@ -77,4 +77,4 @@ trap cleanup INT TERM
 # Entry Point
 detect_openwrt "$allow_snapshots"  # Pass the allow_snapshots flag to detect_openwrt
 revert_changes                     # Revert any uncommitted changes from previous runs
-display_main_menu                  # Start the main menu               # Start the main menu
+display_main_menu                  # Start the main menu
