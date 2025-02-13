@@ -4,7 +4,7 @@ ENHANCEMENT_NAME="Example Enhancement - Cloudflare DNS"
 
 run_enhancement_cloudflare_dns() {
     banner  # Always display the banner first
-    message "Applying Cloudflare DNS settings for WAN and WAN6..."
+    message "Applying Cloudflare DNS settings for WAN and WAN6 ..."
 
     # Set Cloudflare DNS for WAN
     uci set network.wan.peerdns='0' # Ignore ISP DNS
