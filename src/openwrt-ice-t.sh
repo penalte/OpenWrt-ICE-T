@@ -4,7 +4,7 @@ set +x
 # Initialize variables
 allow_snapshots=0
 additional_message=""
-VERSION=${VERSION:-"Development"}  # Default to "Development" if VERSION is not set
+VERSION="Development"
 
 # Export variables
 export allow_snapshots
