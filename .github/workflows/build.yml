@@ -58,10 +58,15 @@ jobs:
     - name: Debug List build directory contents
       run: ls -la build
 
+    - name: Replace VERSION in openwrt-ice-t.sh
+      run: |
+        sed -i 's/VERSION="Development"/VERSION="${{ env.VERSION }}"/' build/openwrt-ice-t.sh
+
     - name: Create self-extracting archive
       run: |
         echo "VERSION=${{ env.VERSION }}"
         makeself build/ "openwrt-ice-t.run" "OpenWrt ICE-T ${{ env.VERSION }}" ./openwrt-ice-t.sh
+
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
