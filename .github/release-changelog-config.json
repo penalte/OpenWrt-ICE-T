@@ -1,5 +1,5 @@
 {
-  "template": "## Changelog\n\n{{CHANGELOG}}\n\n## Contributors\n\n{{CONTRIBUTORS}}",
+  "template": "## Changelog\n\n{{CHANGELOG}}\n\n## Commits\n\n{{COMMITS}}\n\n## Contributors\n\n{{CONTRIBUTORS}}",
   "categories": [
     {
       "title": "🚀 Features",
@@ -18,6 +18,5 @@
   "exclude_labels": ["duplicate", "question", "invalid", "wontfix"],
   "include_open": false,
   "max_pull_requests": 100,
-  "max_back_track_time_days": 365,
-  "include_commits": true  // Add this line to include commits directly
+  "max_back_track_time_days": 365
 }
