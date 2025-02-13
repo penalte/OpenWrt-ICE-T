@@ -77,7 +77,7 @@ jobs:
     - name: Generate changelog
       if: startsWith(github.ref, 'refs/tags/')
       id: changelog
-      uses: mikepenz/release-changelog-builder-action@v3
+      uses: mikepenz/release-changelog-builder-action@v5
       with:
         configuration: .github/release-changelog-config.json
 
