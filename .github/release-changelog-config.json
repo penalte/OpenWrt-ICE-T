@@ -18,5 +18,6 @@
   "exclude_labels": ["duplicate", "question", "invalid", "wontfix"],
   "include_open": false,
   "max_pull_requests": 100,
-  "max_back_track_time_days": 365
+  "max_back_track_time_days": 365,
+  "include_commits": true  // Add this line to include commits directly
 }
