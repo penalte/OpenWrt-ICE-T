@@ -3,7 +3,7 @@
 display_main_menu() {
     while true; do
         banner
-        echo "Configuration Menu:"
+        echo "Configuration Menu - $VERSION:"
         echo "1) ISP Configuration"
         echo "2) Tools"
         echo "3) Enhancements"
