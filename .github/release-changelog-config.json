@@ -12,6 +12,10 @@
     {
       "title": "🛠 Maintenance",
       "labels": ["maintenance"]
+    },
+    {
+      "title": "📌 Other Commits",
+      "labels": []
     }
   ],
   "sort": "ASC",
