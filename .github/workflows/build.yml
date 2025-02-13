@@ -61,7 +61,7 @@ jobs:
     - name: Create self-extracting archive
       run: |
         echo "VERSION=${{ env.VERSION }}"
-        makeself build/ "openwrt-ice-t-.run" "OpenWrt ICE-T ${{ env.VERSION }}" ./openwrt-ice-t.sh [VERSION=${{ env.VERSION }}]
+        makeself build/ "openwrt-ice-t.run" "OpenWrt ICE-T ${{ env.VERSION }}" ./openwrt-ice-t.sh [VERSION=${{ env.VERSION }}]
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
