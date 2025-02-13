@@ -1,4 +1,5 @@
 {
+  "mode": "HYBRID",
   "template": "## Changelog\n\n{{CHANGELOG}}\n\n## Commits\n\n{{COMMITS}}\n\n## Contributors\n\n{{CONTRIBUTORS}}",
   "categories": [
     {
@@ -14,14 +15,10 @@
       "labels": ["maintenance"]
     },
     {
-      "title": "📌 Other Commits",
-      "labels": [],
-      "include": ["*"]
+      "title": "📌 Other Changes",
+      "labels": []
     }
   ],
-  "sort": "ASC",
-  "exclude_labels": ["duplicate", "question", "invalid", "wontfix"],
-  "include_open": false,
-  "max_pull_requests": 100,
-  "max_back_track_time_days": 730
+  "commit_template": "- {{SHA}}: {{MESSAGE}} by @{{AUTHOR}}"
 }
+
