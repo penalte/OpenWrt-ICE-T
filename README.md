@@ -53,11 +53,22 @@ ssh root@<router-ip>
 ```sh
 chmod +x openwrt-ice-t.run
 ```
+
 ## 🎯 Usage
-Run the main script:
+ICE-T is bundled with **Makeself**, a self-extracting archive tool. This means that **to pass arguments directly to ICE-T**, you must first use `--` to separate them from the self-extracting archive tool.
+
+### 🔹 Running ICE-T Normally  
+To start ICE-T using the default interactive menu, run:  
 ```sh
 ./openwrt-ice-t.run
 ```
+### 🔹 Passing Arguments to ICE-T
+If you want to pass command-line arguments (e.g., --help, --version, --allowsnapshots), add -- after the script name, followed by the arguments:
+```sh
+./openwrt-ice-t.run -- --help
+```
+This ensures the arguments are passed to ICE-T itself rather than to Makeself.
+
 ### Main Menu Options:
 1️⃣ **ISP Configuration** – Set up your ISP profile automatically.  
 2️⃣ **Tools** – Use network diagnostics and debugging utilities.  
