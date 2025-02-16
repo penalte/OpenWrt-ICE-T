@@ -48,12 +48,20 @@ if [ -n "$lan_dhcp_off" ]; then
   uci commit dhcp
 fi
 
-# Disable WAN.
-if [ -n "$wan_off" ]; then
-  uci set network.wan.disabled='1'
-  uci set network.wan6.disabled='1'
-  uci commit network
+# Disable WAN only if the interface exists
+if uci show network | grep -q '^network.wan='; then
+  if [ -n "$wan_off" ]; then
+    uci set network.wan.disabled='1'
+  fi
 fi
+
+if uci show network | grep -q '^network.wan6='; then
+  if [ -n "$wan_off" ]; then
+    uci set network.wan6.disabled='1'
+  fi
+fi
+
+uci commit network
 
 # these services are not needed for the dev environment.
 for i in firewall dnsmasq odhcpd; do

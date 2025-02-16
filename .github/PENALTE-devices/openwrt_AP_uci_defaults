@@ -1,0 +1,130 @@
+# Beware! This script will be in /rom/etc/uci-defaults/ as part of the image.
+# uci-defaults scrip for PENALTE Access Points Devices to set default values. 
+# Uncomment lines to apply:
+# 
+#
+# Uncomment below to set root password
+# root_password=""
+# Uncomment below to set LAN IP address
+lan_ip_address="192.168.50.2"
+# Uncomment below to set LAN gateway
+lan_ip_gateway="192.168.50.1"
+# Uncomment below to disable DHCP
+lan_dhcp_off="1"
+# Uncomment below to disable WAN interface
+wan_off="1"
+# Uncomment below to enable IGMP Snooping and Multicast Support
+enable_igmp_multicast="1"
+# Uncomment below to disable unnecessary services for AP mode (firewall, dnsmasq, odhcpd)
+disable_services="1"
+# Uncomment and set values to change Wi-Fi SSID, password, and country
+wifi_ssid="MyNewSSID"
+wifi_password="MySecurePassword"
+wifi_country="PT"  # Set country code (e.g., "US", "PT", "FR")
+
+
+
+# log potential errors.
+exec >/tmp/setup.log 2>&1
+
+# Set hostname and timezone for the AP. 
+uci set system.@system[0].hostname='PENALTE_AP'
+uci set system.@system[0].description='PENALTE AP'
+uci set system.@system[0].notes='PENALTE OPENWRT AP'
+uci set system.@system[0].zonename='Europe/Lisbon'
+uci set system.@system[0].timezone='WET0WEST,M3.5.0/1,M10.5.0'
+uci commit system
+
+# Set root password.
+if [ -n "$root_password" ]; then
+  (echo "$root_password"; sleep 1; echo "$root_password") | passwd > /dev/null
+fi
+
+# Configure LAN.
+if [ -n "$lan_ip_address" ]; then
+  uci set network.lan.ipaddr="$lan_ip_address"
+  uci commit network
+fi
+
+# Configure LAN gateway and DNS.
+if [ -n "$lan_ip_gateway" ]; then
+  uci set network.lan.gateway="$lan_ip_gateway"
+  uci add_list network.lan.dns="$lan_ip_gateway"
+  uci commit network
+fi
+
+# Disable DHCP.
+if [ -n "$lan_dhcp_off" ]; then
+  uci set dhcp.lan.ignore=1
+  # Remove IPv6.
+  uci set dhcp.lan.ra_flags=disabled
+  uci set dhcp.lan.dhcpv6=disabled
+  uci set dhcp.lan.ra=disabled
+  uci commit dhcp
+fi
+
+# Disable WAN only if the interface exists
+if uci show network | grep -q '^network.wan='; then
+  if [ -n "$wan_off" ]; then
+    uci set network.wan.disabled='1'
+    uci commit network
+  fi
+fi
+
+# Disable WAN6 only if the interface exists
+if uci show network | grep -q '^network.wan6='; then
+  if [ -n "$wan_off" ]; then
+    uci set network.wan6.disabled='1'
+    uci commit network
+  fi
+fi
+
+
+
+# Enable IGMP Snooping and Multicast Support
+if [ -n "$enable_igmp_multicast" ]; then
+  uci set network.@device[0].igmp_snooping='1'
+  uci set network.@device[0].multicast='1'
+  uci commit network
+fi
+
+# these services are not needed for the AP Device.
+if [ -n "$disable_services" ]; then
+  for i in firewall dnsmasq odhcpd; do
+    if /etc/init.d/"$i" enabled; then
+      /etc/init.d/"$i" disable
+      /etc/init.d/"$i" stop
+    fi
+  done
+fi
+
+# Configure Wi-Fi SSID and password. 
+if [ -n "$wifi_ssid" ] && [ -n "$wifi_password" ] && [ ${#wifi_password} -ge 8 ]; then
+  # Enable all Wi-Fi radios (wifi-device) and set country code
+  uci show wireless | grep 'wifi-device' | cut -d'.' -f2 | cut -d'=' -f1 | while read -r radio; do
+    # Enable the radio by setting 'disabled' to 0
+    uci set wireless.$radio.disabled='0'
+
+    # Apply country code if set
+    if [ -n "$wifi_country" ]; then
+      uci set wireless.$radio.country="$wifi_country"
+    fi
+  done
+
+  # Enable all Wi-Fi interfaces (wifi-iface) and update SSID/password
+  uci show wireless | grep 'wifi-iface' | cut -d'.' -f2 | cut -d'=' -f1 | while read -r iface; do
+    # Enable the interface and update SSID/password
+    uci set wireless.$iface.disabled='0'
+    uci set wireless.$iface.ssid="$wifi_ssid"
+    uci set wireless.$iface.key="$wifi_password"
+    uci set wireless.$iface.encryption="psk2"  # WPA2 encryption
+  done
+
+  # Commit the changes and restart the network
+  uci commit wireless
+fi
+
+# Restart network.
+/etc/init.d/network restart
+
+echo "All done!"
