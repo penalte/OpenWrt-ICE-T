@@ -14,7 +14,7 @@ lan_dhcp_off="1"
 # Uncomment below to disable WAN interface
 wan_off="1"
 # Uncomment below to enable IGMP Snooping and Multicast Support
-enable_igmp_multicast="1"
+# enable_igmp_multicast="1"
 # Uncomment below to disable unnecessary services for AP mode (firewall, dnsmasq, odhcpd)
 disable_services="1"
 # Uncomment and set values to change Wi-Fi SSID, password, and country
@@ -66,6 +66,7 @@ if uci show network | grep -q '^network.wan='; then
   fi
 fi
 
+# Disable WAN6 only if the interface exists
 if uci show network | grep -q '^network.wan6='; then
   if [ -n "$wan_off" ]; then
     uci set network.wan6.disabled='1'
