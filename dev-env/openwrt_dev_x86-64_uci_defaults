@@ -23,7 +23,7 @@ disable_services="1"
 exec >/tmp/setup.log 2>&1
 
 # Set hostname and timezone for the dev environment. 
-uci set system.@system[0].hostname='PENALTE_DEV_ENV'
+uci set system.@system[0].hostname='PENALTE-DEV'
 uci set system.@system[0].description='PENALTE DEV ENVIRONMENT'
 uci set system.@system[0].notes='PENALTE OPENWRT DEV ENVIRONMENT'
 uci set system.@system[0].zonename='Europe/Lisbon'

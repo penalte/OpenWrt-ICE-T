@@ -28,7 +28,7 @@ wifi_country="PT"  # Set country code (e.g., "US", "PT", "FR")
 exec >/tmp/setup.log 2>&1
 
 # Set hostname and timezone for the AP. 
-uci set system.@system[0].hostname='PENALTE_AP'
+uci set system.@system[0].hostname='PENALTE-AP'
 uci set system.@system[0].description='PENALTE AP'
 uci set system.@system[0].notes='PENALTE OPENWRT AP'
 uci set system.@system[0].zonename='Europe/Lisbon'
