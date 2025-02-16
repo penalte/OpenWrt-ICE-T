@@ -79,8 +79,6 @@ if uci show network | grep -q '^network.wan6='; then
   fi
 fi
 
-
-
 # Enable IGMP Snooping and Multicast Support
 if [ -n "$enable_igmp_multicast" ]; then
   uci set network.@device[0].igmp_snooping='1'

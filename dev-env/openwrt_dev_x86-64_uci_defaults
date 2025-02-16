@@ -3,11 +3,21 @@
 # Uncomment lines to apply:
 # 
 #
+# Uncomment below to set root password
 # root_password=""
-lan_ip_address="192.168.50.2"
+# Uncomment below to set LAN IP address
+lan_ip_address="192.168.50.3"
+# Uncomment below to set LAN gateway
 lan_ip_gateway="192.168.50.1"
+# Uncomment below to disable DHCP
 lan_dhcp_off="1"
+# Uncomment below to disable WAN interface
 wan_off="1"
+# Uncomment below to enable IGMP Snooping and Multicast Support
+enable_igmp_multicast="1"
+# Uncomment below to disable unnecessary services for AP mode (firewall, dnsmasq, odhcpd)
+disable_services="1"
+# Uncomment and set values to change Wi-Fi SSID, password, and country
 
 # log potential errors.
 exec >/tmp/setup.log 2>&1
@@ -52,24 +62,33 @@ fi
 if uci show network | grep -q '^network.wan='; then
   if [ -n "$wan_off" ]; then
     uci set network.wan.disabled='1'
+    uci commit network
   fi
 fi
 
 if uci show network | grep -q '^network.wan6='; then
   if [ -n "$wan_off" ]; then
     uci set network.wan6.disabled='1'
+    uci commit network
   fi
 fi
 
-uci commit network
+# Enable IGMP Snooping and Multicast Support
+if [ -n "$enable_igmp_multicast" ]; then
+  uci set network.@device[0].igmp_snooping='1'
+  uci set network.@device[0].multicast='1'
+  uci commit network
+fi
 
-# these services are not needed for the dev environment.
-for i in firewall dnsmasq odhcpd; do
-  if /etc/init.d/"$i" enabled; then
-    /etc/init.d/"$i" disable
-    /etc/init.d/"$i" stop
-  fi
-done
+# these services are not needed for the AP Device.
+if [ -n "$disable_services" ]; then
+  for i in firewall dnsmasq odhcpd; do
+    if /etc/init.d/"$i" enabled; then
+      /etc/init.d/"$i" disable
+      /etc/init.d/"$i" stop
+    fi
+  done
+fi
 
 # Restart network.
 /etc/init.d/network restart
