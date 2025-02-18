@@ -3,10 +3,12 @@
 <p align="center">
   <img src="https://github.com/penalte/OpenWrt-ICE-T/blob/main/docs/images/logo.png?raw=true" alt="ICE-T Logo">
 </p>
-
 <p align="center">
   <a href="https://github.com/penalte/openwrt-ice-t/releases">
     <img src="https://img.shields.io/github/v/release/penalte/openwrt-ice-t" alt="GitHub release">
+  </a>
+    <a href="https://github.com/penalte/openwrt-ice-t/actions/workflows/build.yml">
+    <img src="https://github.com/penalte/openwrt-ice-t/actions/workflows/build.yml/badge.svg" alt="Build">
   </a>
   <a href="https://github.com/penalte/openwrt-ice-t/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/penalte/openwrt-ice-t" alt="GitHub contributors">
