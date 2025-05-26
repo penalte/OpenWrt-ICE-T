@@ -50,6 +50,12 @@ packet_steering_all="1"
 # Uncomment to enable firewall improvements.
 firewall_improvements="1"
 #
+# Uncomment to activate cpu frequency scaling and thermal management improvements. ! BPI-R4 ONLY !
+# This will set the CPU governor to ondemand, set min 1.1Ghz and max 1.8Ghz frequencies, and thermal policy to 3 (Fan speed to 3 MAX).
+# This is useful for BPI-R4 to prevent overheating and improve performance.
+# You can change it later in luci in System -> Startup -> Local Startup. This is the content of /etc/rc.local
+thermal_and_cpu_management="1"
+#
 # Uncomment and set values to change Wi-Fi SSID, password, and country ONLY IF YOU HAVE A WIFI CARD IN YOUR BPI-R4.
 #wifi_ssid="MyNewSSID"
 #wifi_password="MySecurePassword"
@@ -246,6 +252,17 @@ if [ -n "$wifi_ssid" ] && [ -n "$wifi_password" ] && [ ${#wifi_password} -ge 8 ]
   # Commit the changes and restart the network
   uci commit wireless
 fi
+
+# Enable thermal and CPU management improvements for BPI-R4.
+if [ -n "$thermal_and_cpu_management" ]; then
+    # Set CPU governor to ondemand, min 1.1GHz, max 1.8GHz, and thermal policy to 3 (Fan speed to 3 MAX) at boot.
+    sed -i '/^exit 0$/i echo user_space > /sys/class/thermal/thermal_zone0/policy' /etc/rc.local
+    sed -i '/^exit 0$/i echo 3 > /sys/class/thermal/cooling_device0/cur_state' /etc/rc.local
+    sed -i '/^exit 0$/i echo ondemand > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor' /etc/rc.local
+    sed -i '/^exit 0$/i echo 1100000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq' /etc/rc.local
+    sed -i '/^exit 0$/i echo 1800000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' /etc/rc.local
+fi
+
 
 # Restart services to apply changes.
 if [ -n "$igmpproxy_vdf_config_file" ]; then
