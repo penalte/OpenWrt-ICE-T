@@ -26,6 +26,15 @@ igmpproxy_vdf_config_file="1"
 # This is necessary for IPTV to work correctly.
 enable_igmp_multicast="1"
 #
+# Uncomment to create a VDF-VOIP VLAN (VLAN 101 for Vodafone VOIP.
+# This VLAN will be used for VOIP interface.
+create_vdf_voip="1"
+#
+# Uncomment below to disable boot of the VOIP interface.
+# This is useful if you do not use VOIP and want to disable it at boot but keep the configuration.
+# This will not delete the VOIP interface, it will just disable it at boot.
+disable_voip_interface="1"
+#
 # Uncomment below to override the VDF-NET VLAN interface. !!! WARNING: This will override the default interface.
 # This is useful if you want to use a different interface for the VDF VLAN´s.
 # Only change this if you know what you are doing. 
@@ -36,7 +45,7 @@ enable_igmp_multicast="1"
 # Uncomment below to set a custom MAC address for the VDF VLANs.
 # This is optional and can be used to match the MAC address of your Vodafone device.
 # If not set, the default interface MAC address will be used, you can change it later in luci.
-#custom_vdf_net_iptv_mac="1A:2B:3C:4D:5E:6F"
+#custom_vdf_mac="1A:2B:3C:4D:5E:6F"
 #
 # Uncomment below to apply custom dns servers for the VDF-NET VLAN, Cloudflare and Google DNS.
 apply_custom_dns="1"
@@ -105,8 +114,8 @@ if [ -n "$create_vdf_net" ]; then
     uci set network.vdf_net.ipv6='1'
 
     # Set custom MAC address if provided, otherwise use default.
-    if [ -n "$custom_vdf_net_mac" ]; then
-        uci set network.vdf_net.macaddr="$custom_vdf_net_mac"
+    if [ -n "$custom_mac" ]; then
+        uci set network.vdf_net.macaddr="$custom_mac"
     fi
     uci commit network
 
@@ -135,8 +144,8 @@ if [ -n "$create_vdf_iptv" ]; then
     uci set network.vdf_iptv.name="vdf-iptv"
     uci set network.vdf_iptv.ipv6='0'
     # Check if the custom MAC address is set, otherwise use default.
-    if [ -n "$custom_vdf_net_iptv_mac" ]; then
-        uci set network.vdf_iptv.macaddr="$custom_vdf_net_iptv_mac"
+    if [ -n "$custom_vdf_mac" ]; then
+        uci set network.vdf_iptv.macaddr="$custom_vdf_mac"
     fi
     uci commit network
 
@@ -152,6 +161,44 @@ if [ -n "$create_vdf_iptv" ]; then
     uci commit firewall
 fi
 
+# Create VDF-VOIP VLAN (VLAN 101) for Vodafone VOIP.
+# This VLAN will be used for VOIP interface that will be created along with the VDF-VOIP device.
+if [ -n "$create_vdf_voip" ]; then
+    uci set network.vdf_voip="device"
+    uci set network.vdf_voip.type="8021q"
+    # Set the interface name to the overridden value if provided, otherwise use default.
+    if [ -n "$overide_vdf_ifname" ]; then
+        uci set network.vdf_voip.ifname="$overide_vdf_ifname"
+    else
+        # Auto-detect the WAN interface if not overridden.
+        wan_ifname=$(uci get network.wan.device 2>/dev/null)
+        uci set network.vdf_voip.ifname="$wan_ifname"
+    fi
+    uci set network.vdf_voip.vid="101"
+    uci set network.vdf_voip.name="vdf-voip"
+    uci set network.vdf_voip.ipv6='0'
+    # Check if the custom MAC address is set, otherwise use default.
+    if [ -n "$custom_vdf_mac" ]; then
+        uci set network.vdf_voip.macaddr="$custom_vdf_mac"
+    fi
+    uci commit network
+
+    # Create VOIP interface, add it to WAN firewall zone, and apply VLAN VDF-VOIP with no DNS and no default route
+    uci set network.voip=interface
+    uci set network.voip.proto='dhcp'
+    uci set network.voip.device='vdf-voip'
+    uci set network.voip.defaultroute='0'
+    uci set network.voip.peerdns='0'
+    uci set network.voip.hostname='*'
+    uci add_list firewall.@zone[1].network="voip"
+    uci commit network
+    uci commit firewall
+    # Disable the VOIP interface at boot if requested.
+    if [ -n "$disable_voip_interface" ]; then
+        uci set network.voip.disabled='1'
+        uci commit network
+    fi
+fi
 
 # Replace the default igmpproxy config with Vodafone IPTV settings for VDF IPTV support.
 if [ -n "$igmpproxy_vdf_config_file" ]; then
