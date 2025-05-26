@@ -100,6 +100,9 @@ if [ -n "$lan_ip_address" ]; then
   uci commit network
 fi
 
+# Auto-detect the WAN interface before all configurations.
+wan_ifname=$(uci get network.wan.device 2>/dev/null)
+
 # Create VDF-NET VLAN (VLAN 100) for Vodafone network.
 # This VLAN will be used for WAN and WAN6 interfaces.
 if [ -n "$create_vdf_net" ]; then
@@ -109,8 +112,6 @@ if [ -n "$create_vdf_net" ]; then
     if [ -n "$overide_vdf_ifname" ]; then
         uci set network.vdf_net.ifname="$overide_vdf_ifname"
     else
-        # Auto-detect the WAN interface if not overridden.
-        wan_ifname=$(uci get network.wan.device 2>/dev/null)
         uci set network.vdf_net.ifname="$wan_ifname"
     fi
     uci set network.vdf_net.vid="100"
@@ -140,8 +141,6 @@ if [ -n "$create_vdf_iptv" ]; then
     if [ -n "$overide_vdf_ifname" ]; then
         uci set network.vdf_iptv.ifname="$overide_vdf_ifname"
     else
-        # Auto-detect the WAN interface if not overridden.
-        wan_ifname=$(uci get network.wan.device 2>/dev/null)
         uci set network.vdf_iptv.ifname="$wan_ifname"
     fi
     uci set network.vdf_iptv.vid="105"
@@ -179,8 +178,6 @@ if [ -n "$create_vdf_voip" ]; then
     if [ -n "$overide_vdf_ifname" ]; then
         uci set network.vdf_voip.ifname="$overide_vdf_ifname"
     else
-        # Auto-detect the WAN interface if not overridden.
-        wan_ifname=$(uci get network.wan.device 2>/dev/null)
         uci set network.vdf_voip.ifname="$wan_ifname"
     fi
     uci set network.vdf_voip.vid="101"
