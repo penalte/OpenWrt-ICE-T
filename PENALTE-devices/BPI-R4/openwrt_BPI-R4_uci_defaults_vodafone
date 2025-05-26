@@ -119,8 +119,8 @@ if [ -n "$create_vdf_net" ]; then
     uci set network.vdf_net.ipv6='1'
 
     # Set custom MAC address if provided, otherwise use default.
-    if [ -n "$custom_mac" ]; then
-        uci set network.vdf_net.macaddr="$custom_mac"
+    if [ -n "$custom_vdf_mac" ]; then
+        uci set network.vdf_net.macaddr="$custom_vdf_mac"
     fi
     uci commit network
 
