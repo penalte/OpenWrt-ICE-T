@@ -22,6 +22,10 @@ create_vdf_iptv="1"
 # This is necessary for VDF IPTV to work correctly.
 igmpproxy_vdf_config_file="1"
 #
+# Uncomment to Enforce IGMP version, 1 to 3 for IPTV.
+# Leave it commented to have no enforcement.
+force_igmp_version="2"
+#
 # Uncomment below to enable IGMP Snooping and Multicast Support for IPTV.
 # This is necessary for IPTV to work correctly.
 enable_igmp_multicast="1"
@@ -146,6 +150,11 @@ if [ -n "$create_vdf_iptv" ]; then
     # Check if the custom MAC address is set, otherwise use default.
     if [ -n "$custom_vdf_mac" ]; then
         uci set network.vdf_iptv.macaddr="$custom_vdf_mac"
+    fi
+    uci set network.vdf_iptv.multicast='1'
+    # Enforce IGMP version if specified.
+    if [ -n "$force_igmp_version" ]; then
+        uci set network.vdf_iptv.igmpversion="$force_igmp_version"
     fi
     uci commit network
 
