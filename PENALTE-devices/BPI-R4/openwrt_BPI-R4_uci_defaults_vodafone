@@ -302,7 +302,6 @@ fi
 
 # Add sfp-wan led activity also to the wan port led.
 if [ -n "$sfp_wan_led_activity" ]; then
-    # Check if the sfp-wan led exists and add it to the wan port led.
     uci add system led
     uci set system.@led[-1].name='sfp-wan'
     uci set system.@led[-1].sysfs='mt7530-0:00:green:lan'
