@@ -119,7 +119,7 @@ for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1)));
   dev_name=$(uci get network.@device[$idx].name 2>/dev/null)
   if [ "$dev_name" = "br-wan" ]; then
     # uci delete network.@device[$idx] # This will delete the device.
-    uci del_list network.@device[$idx].ports='$vdf_vlan_parent'
+    uci del_list network.@device[$idx].ports="$vdf_vlan_parent"
     uci commit network
     break
   fi
