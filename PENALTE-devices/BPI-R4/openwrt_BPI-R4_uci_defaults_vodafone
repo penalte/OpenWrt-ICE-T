@@ -113,7 +113,7 @@ fi
 # Auto-detect the WAN interface before all configurations.
 wan_ifname=$(uci get network.wan.device 2>/dev/null)
 
-# Loop through all network devices and delete the one with .name "br-wan" if it exists.
+# Loop through all network devices and delete the one with .name "br-wan" if it exists or remove the parent device from it.
 # This is necessary to avoid conflicts with the VDF-NET VLAN.
 for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1))); do
   dev_name=$(uci get network.@device[$idx].name 2>/dev/null)
