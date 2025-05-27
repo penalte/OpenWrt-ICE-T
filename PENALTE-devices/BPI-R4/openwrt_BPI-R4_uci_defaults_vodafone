@@ -70,6 +70,11 @@ firewall_improvements="1"
 # You can change it later in luci in System -> Startup -> Local Startup. This is the content of /etc/rc.local
 thermal_and_cpu_management="1"
 #
+# Uncomment below to add sfp-wan led ativity also to the wan port led.
+# This is useful if you want to have the SFP WAN LED activity also on the WAN port LED because sfp´s does not have a LED activity.
+# This will add the sfp-wan led activity to the wan port led.
+sfp_wan_led_activity="1"
+#
 # Uncomment below to auto mount the BPI-R4 nvme storage at boot. ! ONLY do this if you have a nvme storage installed and formatted.
 # This will mount the nvme storage to /mnt/nvme at boot. This is useful if you want to use the nvme storage for additional storage or for other purposes.
 #mount_nvme_storage="1"
@@ -84,10 +89,8 @@ thermal_and_cpu_management="1"
 #penalte_configs="1"
 #
 
-
 # log potential errors.
 exec >/tmp/setup.log 2>&1
-
 
 # Set hostname and timezone for the BPI-R4 ROUTER. 
 uci set system.@system[0].hostname='PENALTE-ROUTER'
@@ -97,12 +100,10 @@ uci set system.@system[0].zonename='Europe/Lisbon'
 uci set system.@system[0].timezone='WET0WEST,M3.5.0/1,M10.5.0'
 uci commit system
 
-
 # Set root password.
 if [ -n "$root_password" ]; then
   (echo "$root_password"; sleep 1; echo "$root_password") | passwd > /dev/null
 fi
-
 
 # Configure LAN.
 if [ -n "$lan_ip_address" ]; then
@@ -124,7 +125,6 @@ for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1)));
     break
   fi
 done
-
 
 # Delete the br-wan interface if it exists, as it conflicts with the VDF-NET VLAN.
 if [ -n "$wan_ifname" ] && [ "$wan_ifname" = "br-wan" ]; then
@@ -155,7 +155,6 @@ if [ -n "$create_vdf_net" ]; then
     uci set network.wan6.device='vdf-net'
     uci commit network
 fi
-
 
 # Create VDF-IPTV VLAN (VLAN 105) for Vodafone IPTV.
 # This VLAN will be used for IPTV interface that will be created along with the VDF-IPTV device.
@@ -248,7 +247,6 @@ config phyint
 EOF
 fi
 
-
 # Apply custom DNS servers for the VDF-NET VLAN (Cloudflare and Google DNS)
 if [ -n "$apply_custom_dns" ]; then
     # Disable peer DNS for WAN6 and set IPv6 DNS servers
@@ -263,7 +261,6 @@ if [ -n "$apply_custom_dns" ]; then
     uci commit network
 fi
 
-
 # Enable IGMP Snooping and Multicast Support
 if [ -n "$enable_igmp_multicast" ]; then
   uci set network.@device[0].igmp_snooping='1'
@@ -271,20 +268,17 @@ if [ -n "$enable_igmp_multicast" ]; then
   uci commit network
 fi
 
-
 # Enable flow offloading and hardware offloading in the firewall configuration.
 if [ -n "$flow_hw_offloading" ]; then
   uci set firewall.@[0].flow_offloading='1'
   uci set firewall.@[0].flow_offloading_hw='1'
 fi
 
-
 # Enable packet steering (all CPUs) for better performance. 
 if [ -n "$packet_steering_all" ]; then
     uci set network.globals.packet_steering='2'
     uci commit network
 fi
-
 
 # Enable firewall improvements.
 if [ -n "$firewall_improvements" ]; then
@@ -296,7 +290,6 @@ if [ -n "$firewall_improvements" ]; then
     uci commit firewall
 fi
 
-
 # Enable thermal and CPU management improvements for BPI-R4.
 if [ -n "$thermal_and_cpu_management" ]; then
     # Set CPU governor to ondemand, min 1.1GHz, max 1.8GHz, and thermal policy to 3 (Fan speed to 3 MAX) at boot.
@@ -307,6 +300,19 @@ if [ -n "$thermal_and_cpu_management" ]; then
     sed -i '/^exit 0$/i echo 1800000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' /etc/rc.local
 fi
 
+# Add sfp-wan led activity also to the wan port led.
+if [ -n "$sfp_wan_led_activity" ]; then
+    # Check if the sfp-wan led exists and add it to the wan port led.
+    uci add system led
+    uci set system.@led[-1].name='sfp-wan'
+    uci set system.@led[-1].sysfs='mt7530-0:00:green:lan'
+    uci set system.@led[-1].trigger='netdev'
+    uci set system.@led[-1].dev='eth2'
+    uci add_list system.@led[-1].mode='link'
+    uci add_list system.@led[-1].mode='tx'
+    uci add_list system.@led[-1].mode='rx'
+    uci commit system
+fi
 
 # Auto mount the BPI-R4 nvme storage at boot.
 if [ -n "$mount_nvme_storage" ]; then
@@ -356,7 +362,6 @@ fi
 /etc/init.d/samba4 restart
 /etc/init.d/network restart
 /etc/init.d/firewall restart
-
 
 echo "All done!"
 echo "Setup complete. Reboot recommended to ensure all settings apply cleanly."
