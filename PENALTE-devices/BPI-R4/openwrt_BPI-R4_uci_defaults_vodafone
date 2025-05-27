@@ -80,7 +80,7 @@ thermal_and_cpu_management="1"
 #wifi_country="PT"  # Set country code (e.g., "US", "PT", "FR")
 # 
 # PENALTE specific router configurations.
-# This is a set of configurations that are specific to the PENALTE router.
+# This is a set of configurations that are specific to the PENALTE that are added after copying the script firmware selector.
 #penalte_configs="1"
 #
 
