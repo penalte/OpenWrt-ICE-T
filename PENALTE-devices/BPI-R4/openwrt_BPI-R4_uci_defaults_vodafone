@@ -14,6 +14,19 @@ lan_ip_address="192.168.50.1"
 # This VLAN will be used for WAN and WAN6 interfaces.
 create_vdf_net="1"
 #
+# !!! WARNING !!! YOU NEED TO CHOOSE THE PARENT INTERFACE FOR THE VDF VLANs !!!
+# BEFORE YOU PROCEED, MAKE SURE YOU KNOW WHICH INTERFACE TO USE.
+# We will also need to delete the br-wan interface if it exists or remove the choosen vlan parent device from it.
+# The parent interface is the interface that will be used for the VDF-NET VLAN.
+# Set the parent interface for the VDF-NET, VDF-IPTV, and VDF-VOIP VLANs.
+# FOR BPI-R4: "eth2" for the SFP WAN interface or "wan" for the RJ45 WAN interface.
+vdf_vlan_parent="eth2" 
+#
+# Uncomment below to set a custom MAC address for the VDF VLANs.
+# This is optional and can be used to match the MAC address of your Vodafone device.
+# If not set, the default interface MAC address will be used, you can change it later in luci.
+#custom_vdf_mac="1A:2B:3C:4D:5E:6F"
+#
 # Uncomment to create a VDF-IPTV VLAN (VLAN 105) for Vodafone IPTV.
 # This VLAN will be used for IPTV interface.
 create_vdf_iptv="1"
@@ -39,18 +52,7 @@ create_vdf_voip="1"
 # This will not delete the VOIP interface, it will just disable it at boot.
 disable_voip_interface="1"
 #
-# Uncomment below to override the VDF-NET VLAN interface. !!! WARNING: This will override the default interface.
-# This is useful if you want to use a different interface for the VDF VLAN´s.
-# Only change this if you know what you are doing. 
-# If you leave it commented, this scrippt will auto detect the wan and wan6 default interface "br-wan".
-# Example BPI-R4: "eth2" for the SFP WAN interface or "wan" for the RJ45 WAN interface.
-#overide_vdf_ifname="eth2" 
-#
-# Uncomment below to set a custom MAC address for the VDF VLANs.
-# This is optional and can be used to match the MAC address of your Vodafone device.
-# If not set, the default interface MAC address will be used, you can change it later in luci.
-#custom_vdf_mac="1A:2B:3C:4D:5E:6F"
-#
+
 # Uncomment below to apply custom dns servers for the VDF-NET VLAN, Cloudflare and Google DNS.
 apply_custom_dns="1"
 #
@@ -69,10 +71,19 @@ firewall_improvements="1"
 # You can change it later in luci in System -> Startup -> Local Startup. This is the content of /etc/rc.local
 thermal_and_cpu_management="1"
 #
+# Uncomment below to auto mount the BPI-R4 nvme storage at boot. ! ONLY do this if you have a nvme storage installed and formatted.
+# This will mount the nvme storage to /mnt/nvme at boot. This is useful if you want to use the nvme storage for additional storage or for other purposes.
+mount_nvme_storage="1"
+#
 # Uncomment and set values to change Wi-Fi SSID, password, and country ONLY IF YOU HAVE A WIFI CARD IN YOUR BPI-R4.
 #wifi_ssid="MyNewSSID"
 #wifi_password="MySecurePassword"
 #wifi_country="PT"  # Set country code (e.g., "US", "PT", "FR")
+# 
+# PENALTE specific router configurations.
+# This is a set of configurations that are specific to the PENALTE router.
+#penalte_configs="1"
+#
 
 
 # log potential errors.
@@ -99,21 +110,36 @@ if [ -n "$lan_ip_address" ]; then
   uci set network.lan.ipaddr="$lan_ip_address"
   uci commit network
 fi
-
+ 
 # Auto-detect the WAN interface before all configurations.
 wan_ifname=$(uci get network.wan.device 2>/dev/null)
+
+# Loop through all network devices and delete the one with .name "br-wan" if it exists.
+# This is necessary to avoid conflicts with the VDF-NET VLAN.
+for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1))); do
+  dev_name=$(uci get network.@device[$idx].name 2>/dev/null)
+  if [ "$dev_name" = "br-wan" ]; then
+    # uci delete network.@device[$idx] # This will delete the device.
+    uci del_list network.@device[$idx].ports='$vdf_vlan_parent'
+    uci commit network
+    break
+  fi
+done
+
+
+# Delete the br-wan interface if it exists, as it conflicts with the VDF-NET VLAN.
+if [ -n "$wan_ifname" ] && [ "$wan_ifname" = "br-wan" ]; then
+    uci delete network.br_wan
+    uci commit network
+fi
 
 # Create VDF-NET VLAN (VLAN 100) for Vodafone network.
 # This VLAN will be used for WAN and WAN6 interfaces.
 if [ -n "$create_vdf_net" ]; then
     uci set network.vdf_net="device"
     uci set network.vdf_net.type="8021q"
-    # Set the interface name to the overridden value if provided, otherwise use default.
-    if [ -n "$overide_vdf_ifname" ]; then
-        uci set network.vdf_net.ifname="$overide_vdf_ifname"
-    else
-        uci set network.vdf_net.ifname="$wan_ifname"
-    fi
+    # Set the parent device to the VDF-NET VLAN interface.
+    uci set network.vdf_net.ifname="$vdf_vlan_parent"
     uci set network.vdf_net.vid="100"
     uci set network.vdf_net.name="vdf-net"
     uci set network.vdf_net.ipv6='1'
@@ -137,12 +163,8 @@ fi
 if [ -n "$create_vdf_iptv" ]; then
     uci set network.vdf_iptv="device"
     uci set network.vdf_iptv.type="8021q"
-    # Set the interface name to the overridden value if provided, otherwise use default.
-    if [ -n "$overide_vdf_ifname" ]; then
-        uci set network.vdf_iptv.ifname="$overide_vdf_ifname"
-    else
-        uci set network.vdf_iptv.ifname="$wan_ifname"
-    fi
+    # Set the parent device to the VDF-IPTV VLAN interface.
+    uci set network.vdf_iptv.ifname="$vdf_vlan_parent"
     uci set network.vdf_iptv.vid="105"
     uci set network.vdf_iptv.name="vdf-iptv"
     uci set network.vdf_iptv.ipv6='0'
@@ -174,12 +196,8 @@ fi
 if [ -n "$create_vdf_voip" ]; then
     uci set network.vdf_voip="device"
     uci set network.vdf_voip.type="8021q"
-    # Set the interface name to the overridden value if provided, otherwise use default.
-    if [ -n "$overide_vdf_ifname" ]; then
-        uci set network.vdf_voip.ifname="$overide_vdf_ifname"
-    else
-        uci set network.vdf_voip.ifname="$wan_ifname"
-    fi
+    # Set the parent device to the VDF-VOIP VLAN interface.
+    uci set network.vdf_voip.ifname="$vdf_vlan_parent"
     uci set network.vdf_voip.vid="101"
     uci set network.vdf_voip.name="vdf-voip"
     uci set network.vdf_voip.ipv6='0'
@@ -280,6 +298,26 @@ if [ -n "$firewall_improvements" ]; then
 fi
 
 
+# Enable thermal and CPU management improvements for BPI-R4.
+if [ -n "$thermal_and_cpu_management" ]; then
+    # Set CPU governor to ondemand, min 1.1GHz, max 1.8GHz, and thermal policy to 3 (Fan speed to 3 MAX) at boot.
+    sed -i '/^exit 0$/i echo user_space > /sys/class/thermal/thermal_zone0/policy' /etc/rc.local
+    sed -i '/^exit 0$/i echo 3 > /sys/class/thermal/cooling_device0/cur_state' /etc/rc.local
+    sed -i '/^exit 0$/i echo ondemand > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor' /etc/rc.local
+    sed -i '/^exit 0$/i echo 1100000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq' /etc/rc.local
+    sed -i '/^exit 0$/i echo 1800000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' /etc/rc.local
+fi
+
+
+# Auto mount the BPI-R4 nvme storage at boot.
+if [ -n "$mount_nvme_storage" ]; then
+  uci add fstab mount
+  uci set fstab.@mount[-1].enabled='1'
+  uci set fstab.@mount[-1].device='/dev/nvme0n1'
+  uci set fstab.@mount[-1].target='/mnt/nvme'
+  uci commit fstab
+fi
+
 # Configure Wi-Fi SSID and password. 
 if [ -n "$wifi_ssid" ] && [ -n "$wifi_password" ] && [ ${#wifi_password} -ge 8 ]; then
   # Enable all Wi-Fi radios (wifi-device) and set country code
@@ -306,21 +344,17 @@ if [ -n "$wifi_ssid" ] && [ -n "$wifi_password" ] && [ ${#wifi_password} -ge 8 ]
   uci commit wireless
 fi
 
-# Enable thermal and CPU management improvements for BPI-R4.
-if [ -n "$thermal_and_cpu_management" ]; then
-    # Set CPU governor to ondemand, min 1.1GHz, max 1.8GHz, and thermal policy to 3 (Fan speed to 3 MAX) at boot.
-    sed -i '/^exit 0$/i echo user_space > /sys/class/thermal/thermal_zone0/policy' /etc/rc.local
-    sed -i '/^exit 0$/i echo 3 > /sys/class/thermal/cooling_device0/cur_state' /etc/rc.local
-    sed -i '/^exit 0$/i echo ondemand > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor' /etc/rc.local
-    sed -i '/^exit 0$/i echo 1100000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq' /etc/rc.local
-    sed -i '/^exit 0$/i echo 1800000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' /etc/rc.local
+# PENALTE specific router configurations.
+if [ -n "$penalte_configs" ]; then
+    # Set the PENALTE specific configurations.
+  echo "PENALTE specific configurations applied."
 fi
-
 
 # Restart services to apply changes.
 if [ -n "$igmpproxy_vdf_config_file" ]; then
     /etc/init.d/igmpproxy restart
 fi
+/etc/init.d/samba4 restart
 /etc/init.d/network restart
 /etc/init.d/firewall restart
 
