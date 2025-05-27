@@ -1,1 +1,1 @@
-ethtool-full nano block-mount parted igmpproxy iperf3 luci-app-samba4 wsdd2 htop iftop owut luci-app-attendedsysupgrade luci-app-ttyd luci-mod-dashboard luci-app-filemanager
+kmod-nvme nvme-cli uci-app-uhttpd luci-ssl ethtool-full nano block-mount parted igmpproxy iperf3 luci-app-samba4 wsdd2 htop iftop owut luci-app-attendedsysupgrade luci-app-ttyd luci-mod-dashboard luci-app-filemanager

@@ -37,7 +37,7 @@ igmpproxy_vdf_config_file="1"
 #
 # Uncomment to Enforce IGMP version, 1 to 3 for IPTV.
 # Leave it commented to have no enforcement.
-force_igmp_version="2"
+#force_igmp_version="2"
 #
 # Uncomment below to enable IGMP Snooping and Multicast Support for IPTV.
 # This is necessary for IPTV to work correctly.
@@ -52,7 +52,6 @@ create_vdf_voip="1"
 # This will not delete the VOIP interface, it will just disable it at boot.
 disable_voip_interface="1"
 #
-
 # Uncomment below to apply custom dns servers for the VDF-NET VLAN, Cloudflare and Google DNS.
 apply_custom_dns="1"
 #
@@ -73,7 +72,7 @@ thermal_and_cpu_management="1"
 #
 # Uncomment below to auto mount the BPI-R4 nvme storage at boot. ! ONLY do this if you have a nvme storage installed and formatted.
 # This will mount the nvme storage to /mnt/nvme at boot. This is useful if you want to use the nvme storage for additional storage or for other purposes.
-mount_nvme_storage="1"
+#mount_nvme_storage="1"
 #
 # Uncomment and set values to change Wi-Fi SSID, password, and country ONLY IF YOU HAVE A WIFI CARD IN YOUR BPI-R4.
 #wifi_ssid="MyNewSSID"
