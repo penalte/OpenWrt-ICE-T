@@ -126,10 +126,12 @@ for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1)));
   fi
 done
 
-# Delete the br-wan interface if it exists, as it conflicts with the VDF-NET VLAN.
-if [ -n "$wan_ifname" ] && [ "$wan_ifname" = "br-wan" ]; then
-    uci delete network.br_wan
-    uci commit network
+# Set custom MAC address if provided, otherwise use default.
+if [ -n "$custom_vdf_mac" ]; then
+  uci add network device
+  uci set network.@device[-1].name="$vdf_vlan_parent"
+  uci set network.@device[-1].macaddr="$custom_vdf_mac"
+  uci commit network
 fi
 
 # Create VDF-NET VLAN (VLAN 100) for Vodafone network.
@@ -142,11 +144,6 @@ if [ -n "$create_vdf_net" ]; then
     uci set network.vdf_net.vid="100"
     uci set network.vdf_net.name="vdf-net"
     uci set network.vdf_net.ipv6='1'
-
-    # Set custom MAC address if provided, otherwise use default.
-    if [ -n "$custom_vdf_mac" ]; then
-        uci set network.vdf_net.macaddr="$custom_vdf_mac"
-    fi
     uci commit network
 
     # Apply VDF-NET VLAN for the WAN and WAN6 interfaces.
@@ -166,10 +163,6 @@ if [ -n "$create_vdf_iptv" ]; then
     uci set network.vdf_iptv.vid="105"
     uci set network.vdf_iptv.name="vdf-iptv"
     uci set network.vdf_iptv.ipv6='0'
-    # Check if the custom MAC address is set, otherwise use default.
-    if [ -n "$custom_vdf_mac" ]; then
-        uci set network.vdf_iptv.macaddr="$custom_vdf_mac"
-    fi
     uci set network.vdf_iptv.multicast='1'
     # Enforce IGMP version if specified.
     if [ -n "$force_igmp_version" ]; then
@@ -199,10 +192,6 @@ if [ -n "$create_vdf_voip" ]; then
     uci set network.vdf_voip.vid="101"
     uci set network.vdf_voip.name="vdf-voip"
     uci set network.vdf_voip.ipv6='0'
-    # Check if the custom MAC address is set, otherwise use default.
-    if [ -n "$custom_vdf_mac" ]; then
-        uci set network.vdf_voip.macaddr="$custom_vdf_mac"
-    fi
     uci commit network
 
     # Create VOIP interface, add it to WAN firewall zone, and apply VLAN VDF-VOIP with no DNS and no default route
