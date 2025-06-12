@@ -115,7 +115,7 @@ fi
 wan_ifname=$(uci get network.wan.device 2>/dev/null)
 
 # Loop through all network devices and delete the one with .name "br-wan" if it exists or remove the parent device from it.
-# This is necessary to avoid conflicts with the VDF-NET VLAN.
+# This is necessary to avoid conflicts with the VDF VLAN´s.
 for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1))); do
   dev_name=$(uci get network.@device[$idx].name 2>/dev/null)
   if [ "$dev_name" = "br-wan" ]; then
@@ -127,7 +127,19 @@ for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1)));
 done
 
 # Set custom MAC address if provided, otherwise use default.
+# BPI-R4 on first boot sets a static MAC address for the SFP WAN interface if not set it will randomly generate one at every boot. 
+# We need to find the eth2 device and deleted the config then create again and set the custom MAC address.
 if [ -n "$custom_vdf_mac" ]; then
+  # Check if the device already exists, if not, create it.
+  for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1))); do
+  dev_name=$(uci get network.@device[$idx].name 2>/dev/null)
+  if [ "$dev_name" = "$vdf_vlan_parent" ]; then
+    uci delete network.@device[$idx] # This will delete the device.
+    uci commit network
+    break
+  fi
+  done
+  # Create the device with the custom MAC address.
   uci add network device
   uci set network.@device[-1].name="$vdf_vlan_parent"
   uci set network.@device[-1].macaddr="$custom_vdf_mac"
@@ -295,7 +307,7 @@ if [ -n "$sfp_wan_led_activity" ]; then
     uci set system.@led[-1].name='sfp-wan'
     uci set system.@led[-1].sysfs='mt7530-0:00:green:lan'
     uci set system.@led[-1].trigger='netdev'
-    uci set system.@led[-1].dev='eth2'
+    uci set system.@led[-1].dev="$vdf_vlan_parent"
     uci add_list system.@led[-1].mode='link'
     uci add_list system.@led[-1].mode='tx'
     uci add_list system.@led[-1].mode='rx'
