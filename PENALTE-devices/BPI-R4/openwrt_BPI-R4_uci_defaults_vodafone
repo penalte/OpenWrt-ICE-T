@@ -351,8 +351,16 @@ fi
 
 # PENALTE specific router configurations.
 if [ -n "$penalte_configs" ]; then
-    # Set the PENALTE specific configurations.
-  echo "PENALTE specific configurations applied."
+  PENALTE_SCRIPT="/mnt/nvme/penalte/openwrt/penalte_configs.sh"
+
+  if [ -f "$PENALTE_SCRIPT" ]; then
+    echo "Applying PENALTE specific configurations..."
+    . "$PENALTE_SCRIPT"
+    echo "PENALTE specific configurations applied."
+  else
+    echo "Error: $PENALTE_SCRIPT not found. Aborting."
+    exit 1
+  fi
 fi
 
 # Restart services to apply changes.
