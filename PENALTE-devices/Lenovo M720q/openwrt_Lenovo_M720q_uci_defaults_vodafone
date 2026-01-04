@@ -1,0 +1,330 @@
+# Lenovo M720q PENALTE OpenWrt Vodafone UCI Defaults
+# This script sets up the Lenovo M720q with Vodafone specific configurations using UCI commands.
+# Beware! This script will be in /rom/etc/uci-defaults/ as part of the image.
+# Uncomment lines to apply:
+# 
+#
+# Uncomment below to set root password
+# root_password=""
+#
+# Uncomment below to set LAN IP address
+lan_ip_address="192.168.50.1"
+#
+# Uncomment to create a VDF-NET VLAN (VLAN 100) for Vodafone network.
+# This VLAN will be used for WAN and WAN6 interfaces.
+create_vdf_net="1"
+#
+# !!! WARNING !!! OVERRIDE OF THE PARENT INTERFACE FOR THE VDF VLANs, MAKE SURE YOU KNOW WHAT YOU ARE DOING BEFORE UNCOMMENTING!!!
+# The parent interface is the interface that will be used for the VDF-NET VLAN.
+# Set the parent interface for the VDF-NET, VDF-IPTV, and VDF-VOIP VLANs.
+#override_vdf_vlan_parent=""
+#
+# Uncomment below to set a custom MAC address for the VDF VLANs.
+# This is optional and can be used to match the MAC address of your Vodafone device.
+# If not set, the default interface MAC address will be used, you can change it later in luci.
+#custom_vdf_mac="1A:2B:3C:4D:5E:6F"
+#
+# Uncomment to create a VDF-IPTV VLAN (VLAN 105) for Vodafone IPTV.
+# This VLAN will be used for IPTV interface.
+create_vdf_iptv="1"
+#
+# Replaces the default igmpproxy config with Vodafone IPTV settings for VDF IPTV support.
+# This is necessary for VDF IPTV to work correctly.
+igmpproxy_vdf_config_file="1"
+#
+# Uncomment to Enforce IGMP version, 1 to 3 for IPTV.
+# Leave it commented to have no enforcement.
+#force_igmp_version="2"
+#
+# Uncomment below to enable IGMP Snooping and Multicast Support for IPTV.
+# This is necessary for IPTV to work correctly.
+enable_igmp_multicast="1"
+#
+# Uncomment to create a VDF-VOIP VLAN (VLAN 101 for Vodafone VOIP.
+# This VLAN will be used for VOIP interface.
+create_vdf_voip="1"
+#
+# Uncomment below to disable boot of the VOIP interface.
+# This is useful if you do not use VOIP and want to disable it at boot but keep the configuration.
+# This will not delete the VOIP interface, it will just disable it at boot.
+disable_voip_interface="1"
+#
+# Uncomment below to apply custom dns servers for the VDF-NET VLAN, Cloudflare and Google DNS.
+apply_custom_dns="1"
+#
+# Uncomment to enable flow offloading and hardware offloading.
+flow_hw_offloading="1"
+#
+# Enable packet steering (all CPUs) for better performance. 
+packet_steering_all="1"
+#
+# Uncomment to enable Performance improvements.
+performance_improvements="1"
+#
+# Uncomment to enable firewall improvements.
+firewall_improvements="1"
+#
+# Uncomment and set values to change Wi-Fi SSID, password, and country ONLY IF YOU HAVE A WIFI CARD IN YOUR Lenovo M720q.
+#wifi_ssid="MyNewSSID"
+#wifi_password="MySecurePassword"
+#wifi_country="PT"  # Set country code (e.g., "US", "PT", "FR")
+# 
+# PENALTE specific router configurations.
+# This is a set of configurations that are specific to the PENALTE that are added after copying the script firmware selector.
+#penalte_configs="1"
+#
+
+# log potential errors.
+exec >/tmp/setup.log 2>&1
+
+# Set hostname and timezone for the Lenovo M720q ROUTER. 
+uci set system.@system[0].hostname='PENALTE-ROUTER'
+uci set system.@system[0].description='PENALTE OpenWrt Router'
+uci set system.@system[0].notes='PENALTE OPENWRT ROUTER WITH VDF CONFIGURATION'
+uci set system.@system[0].zonename='Europe/Lisbon'
+uci set system.@system[0].timezone='WET0WEST,M3.5.0/1,M10.5.0'
+uci commit system
+
+# Set root password.
+if [ -n "$root_password" ]; then
+  (echo "$root_password"; sleep 1; echo "$root_password") | passwd > /dev/null
+fi
+
+# Configure LAN.
+if [ -n "$lan_ip_address" ]; then
+  uci set network.lan.ipaddr="$lan_ip_address"
+  uci commit network
+fi
+ 
+# Auto-detect the WAN interface before all configurations and set the parent device for the VDF VLANs or use the override if provided above.
+# If uncommented but empty, fallback to auto-detect.
+if [ -n "$override_vdf_vlan_parent" ]; then
+  vdf_vlan_parent="$override_vdf_vlan_parent"
+else
+  vdf_vlan_parent=$(uci get network.wan.device 2>/dev/null)
+fi
+
+
+# Set custom MAC address if provided, otherwise use default.
+# We need to find the vdf_vlan_parent device and set the custom MAC address.
+if [ -n "$custom_vdf_mac" ]; then
+  # Check if the device already exists, if not, create it.
+  for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1))); do
+  dev_name=$(uci get network.@device[$idx].name 2>/dev/null)
+  if [ "$dev_name" = "$vdf_vlan_parent" ]; then
+    uci set network.@device[$idx].macaddr="$custom_vdf_mac"
+    uci commit network
+    break
+  fi
+  done
+fi
+
+# Create VDF-NET VLAN (VLAN 100) for Vodafone network.
+# This VLAN will be used for WAN and WAN6 interfaces.
+if [ -n "$create_vdf_net" ]; then
+    uci set network.vdf_net="device"
+    uci set network.vdf_net.type="8021q"
+    # Set the parent device to the VDF-NET VLAN interface.
+    uci set network.vdf_net.ifname="$vdf_vlan_parent"
+    uci set network.vdf_net.vid="100"
+    uci set network.vdf_net.name="vdf-net"
+    uci set network.vdf_net.ipv6='1'
+    uci commit network
+
+    # Apply VDF-NET VLAN for the WAN and WAN6 interfaces.
+    uci set network.wan.device='vdf-net'
+    uci set network.wan.hostname='*'
+    uci set network.wan6.device='vdf-net'
+    uci commit network
+fi
+
+# Create VDF-IPTV VLAN (VLAN 105) for Vodafone IPTV.
+# This VLAN will be used for IPTV interface that will be created along with the VDF-IPTV device.
+if [ -n "$create_vdf_iptv" ]; then
+    uci set network.vdf_iptv="device"
+    uci set network.vdf_iptv.type="8021q"
+    # Set the parent device to the VDF-IPTV VLAN interface.
+    uci set network.vdf_iptv.ifname="$vdf_vlan_parent"
+    uci set network.vdf_iptv.vid="105"
+    uci set network.vdf_iptv.name="vdf-iptv"
+    uci set network.vdf_iptv.ipv6='0'
+    uci set network.vdf_iptv.multicast='1'
+    # Enforce IGMP version if specified.
+    if [ -n "$force_igmp_version" ]; then
+        uci set network.vdf_iptv.igmpversion="$force_igmp_version"
+    fi
+    uci commit network
+
+    # Create IPTV interface, add it to WAN firewall zone, and apply VLAN VDF-IPTV with no DNS and no default route
+    uci set network.iptv=interface
+    uci set network.iptv.proto='dhcp'
+    uci set network.iptv.device='vdf-iptv'
+    uci set network.iptv.defaultroute='0'
+    uci set network.iptv.peerdns='0'
+    uci set network.iptv.hostname='*'
+    uci add_list firewall.@zone[1].network="iptv"
+    uci commit network
+    uci commit firewall
+fi
+
+# Create VDF-VOIP VLAN (VLAN 101) for Vodafone VOIP.
+# This VLAN will be used for VOIP interface that will be created along with the VDF-VOIP device.
+if [ -n "$create_vdf_voip" ]; then
+    uci set network.vdf_voip="device"
+    uci set network.vdf_voip.type="8021q"
+    # Set the parent device to the VDF-VOIP VLAN interface.
+    uci set network.vdf_voip.ifname="$vdf_vlan_parent"
+    uci set network.vdf_voip.vid="101"
+    uci set network.vdf_voip.name="vdf-voip"
+    uci set network.vdf_voip.ipv6='0'
+    uci commit network
+
+    # Create VOIP interface, add it to WAN firewall zone, and apply VLAN VDF-VOIP with no DNS and no default route
+    uci set network.voip=interface
+    uci set network.voip.proto='dhcp'
+    uci set network.voip.device='vdf-voip'
+    uci set network.voip.defaultroute='0'
+    uci set network.voip.peerdns='0'
+    uci set network.voip.hostname='*'
+    uci add_list firewall.@zone[1].network="voip"
+    uci commit network
+    uci commit firewall
+    # Disable the VOIP interface at boot if requested.
+    if [ -n "$disable_voip_interface" ]; then
+        uci set network.voip.disabled='1'
+        uci commit network
+    fi
+fi
+
+# Replace the default igmpproxy config with Vodafone IPTV settings for VDF IPTV support.
+if [ -n "$igmpproxy_vdf_config_file" ]; then
+    # Remove the existing igmpproxy config file if it exists.
+    rm -f /etc/config/igmpproxy
+
+    # Create a new igmpproxy config file with Vodafone IPTV settings.
+    cat <<'EOF' > /etc/config/igmpproxy
+config igmpproxy
+    option quickleave 1
+    option verbose 1
+
+config phyint
+    option network iptv
+    option zone wan
+    option direction upstream
+    list altnet 10.0.0.0/8
+    list altnet 239.0.0.0/8
+
+config phyint
+    option network lan
+    option zone lan
+    option direction downstream
+EOF
+fi
+
+# Apply custom DNS servers for the VDF-NET VLAN (Cloudflare and Google DNS)
+if [ -n "$apply_custom_dns" ]; then
+    # Disable peer DNS for WAN6 and set IPv6 DNS servers
+    uci set network.wan6.peerdns='0'
+    uci add_list network.wan6.dns='2606:4700:4700::1111'   # Cloudflare IPv6
+    uci add_list network.wan6.dns='2001:4860:4860::8888'   # Google IPv6
+
+    # Disable peer DNS for WAN and set IPv4 DNS servers
+    uci set network.wan.peerdns='0'
+    uci add_list network.wan.dns='1.1.1.1'                 # Cloudflare IPv4
+    uci add_list network.wan.dns='8.8.8.8'                 # Google IPv4
+    uci commit network
+fi
+
+# Enable IGMP Snooping and Multicast Support
+if [ -n "$enable_igmp_multicast" ]; then
+  uci set network.@device[0].igmp_snooping='1'
+  uci set network.@device[0].multicast='1'
+  uci commit network
+fi
+
+# Enable flow offloading and hardware offloading in the firewall configuration.
+if [ -n "$flow_hw_offloading" ]; then
+  uci set firewall.@[0].flow_offloading='1'
+  uci set firewall.@[0].flow_offloading_hw='1'
+fi
+
+# Enable packet steering (all CPUs) for better performance. 
+if [ -n "$packet_steering_all" ]; then
+    uci set network.globals.packet_steering='2'
+    uci commit network
+fi
+
+# Enable Performance improvements.
+if [ -n "${performance_improvements:-}" ]; then
+    # Enable IRQ balancing
+    uci set irqbalance.irqbalance.enabled='1'
+    uci commit irqbalance
+
+    # Disable offloads & EEE on Intel i226 (Vodafone-friendly)
+    if command -v ethtool >/dev/null 2>&1; then
+        ethtool -K eth0 tso off gso off gro off 2>/dev/null
+        ethtool --set-eee eth0 eee off 2>/dev/null
+    fi
+fi
+
+
+# Enable firewall improvements.
+if [ -n "$firewall_improvements" ]; then
+    uci set firewall.@[0].drop_invalid='1'
+    uci set firewall.@[0].input='DROP'
+    uci set firewall.@[0].forward='DROP'
+    uci set firewall.@zone[1].input='DROP'
+    uci set firewall.@zone[1].forward='DROP'
+    uci commit firewall
+fi
+
+# Configure Wi-Fi SSID and password. 
+if [ -n "$wifi_ssid" ] && [ -n "$wifi_password" ] && [ ${#wifi_password} -ge 8 ]; then
+  # Enable all Wi-Fi radios (wifi-device) and set country code
+  uci show wireless | grep 'wifi-device' | cut -d'.' -f2 | cut -d'=' -f1 | while read -r radio; do
+    # Enable the radio by setting 'disabled' to 0
+    uci set wireless.$radio.disabled='0'
+
+    # Apply country code if set
+    if [ -n "$wifi_country" ]; then
+      uci set wireless.$radio.country="$wifi_country"
+    fi
+  done
+
+  # Enable all Wi-Fi interfaces (wifi-iface) and update SSID/password
+  uci show wireless | grep 'wifi-iface' | cut -d'.' -f2 | cut -d'=' -f1 | while read -r iface; do
+    # Enable the interface and update SSID/password
+    uci set wireless.$iface.disabled='0'
+    uci set wireless.$iface.ssid="$wifi_ssid"
+    uci set wireless.$iface.key="$wifi_password"
+    uci set wireless.$iface.encryption="psk2"  # WPA2 encryption
+  done
+
+  # Commit the changes and restart the network
+  uci commit wireless
+fi
+
+# PENALTE specific router configurations.
+if [ -n "$penalte_configs" ]; then
+  PENALTE_SCRIPT="/mnt/nvme/penalte/openwrt/penalte_configs.sh"
+
+  if [ -f "$PENALTE_SCRIPT" ]; then
+    echo "Applying PENALTE specific configurations..."
+    . "$PENALTE_SCRIPT"
+    echo "PENALTE specific configurations applied."
+  else
+    echo "Error: $PENALTE_SCRIPT not found. Aborting."
+    exit 1
+  fi
+fi
+
+# Restart services to apply changes.
+if [ -n "$igmpproxy_vdf_config_file" ]; then
+    /etc/init.d/igmpproxy restart
+fi
+/etc/init.d/samba4 restart
+/etc/init.d/network restart
+/etc/init.d/firewall restart
+
+echo "All done!"
+echo "Setup complete. Reboot recommended to ensure all settings apply cleanly."
