@@ -255,17 +255,17 @@ if [ -n "$packet_steering_all" ]; then
 fi
 
 # Enable Performance improvements.
-if [ -n "${performance_improvements:-}" ]; then
-    # Enable IRQ balancing
+if [ -n "$performance_improvements" ]; then
     uci set irqbalance.irqbalance.enabled='1'
     uci commit irqbalance
 
-    # Disable offloads & EEE on Intel i226 (Vodafone-friendly)
-    if command -v ethtool >/dev/null 2>&1; then
-        ethtool -K eth0 tso off gso off gro off 2>/dev/null
-        ethtool --set-eee eth0 eee off 2>/dev/null
+    if [ -f /etc/init.d/irqbalance ]; then
+        /etc/init.d/irqbalance enable
+        /etc/init.d/irqbalance start
     fi
-fi
+
+fi    
+
 
 
 # Enable firewall improvements.
@@ -325,6 +325,7 @@ fi
 /etc/init.d/samba4 restart
 /etc/init.d/network restart
 /etc/init.d/firewall restart
+/etc/init.d/irqbalance restart
 
 echo "All done!"
 echo "Setup complete. Reboot recommended to ensure all settings apply cleanly."
