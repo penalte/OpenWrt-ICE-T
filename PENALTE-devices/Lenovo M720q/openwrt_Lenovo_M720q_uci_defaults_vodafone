@@ -105,19 +105,31 @@ else
 fi
 
 
-# Set custom MAC address if provided, otherwise use default.
-# We need to find the vdf_vlan_parent device and set the custom MAC address.
-if [ -n "$custom_vdf_mac" ]; then
-  # Check if the device already exists, if not, create it.
-  for idx in $(seq 0 $(($(uci show network | grep -c '^network.@device\[') - 1))); do
-  dev_name=$(uci get network.@device[$idx].name 2>/dev/null)
-  if [ "$dev_name" = "$vdf_vlan_parent" ]; then
-    uci set network.@device[$idx].macaddr="$custom_vdf_mac"
+# Set custom MAC address if provided
+if [ -n "${custom_vdf_mac:-}" ]; then
+    found_idx=""
+
+    # Look for existing device section (DSA-safe)
+    for idx in $(uci show network | sed -n 's/^network.@device\[\([0-9]\+\)\].name=.*/\1/p'); do
+        if [ "$(uci -q get network.@device[$idx].name)" = "$vdf_vlan_parent" ]; then
+            found_idx="$idx"
+            break
+        fi
+    done
+
+    # Create device section if missing
+    if [ -z "$found_idx" ]; then
+        found_idx="$(uci add network device)"
+        uci set network.@device[$found_idx].name="$vdf_vlan_parent"
+    fi
+
+    # Apply MAC
+    uci set network.@device[$found_idx].macaddr="$custom_vdf_mac"
     uci commit network
-    break
-  fi
-  done
+
+    echo "Custom MAC $custom_vdf_mac applied to $vdf_vlan_parent"
 fi
+
 
 # Create VDF-NET VLAN (VLAN 100) for Vodafone network.
 # This VLAN will be used for WAN and WAN6 interfaces.
